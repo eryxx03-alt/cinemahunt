@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "CinemaHunt",
   description: "Discover trending, popular, and upcoming movies",
+  verification: {
+    google: "GnVDYdiaco6zuErLYyNbwKXMP-Li3EB17g85uzJZwdE",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
