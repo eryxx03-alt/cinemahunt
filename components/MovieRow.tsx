@@ -46,7 +46,7 @@ export default function MovieRow({
             )}
 
             <div className="p-3">
-              <h3 className="line-clamp-1 font-semibold text-white">
+              <h3 className="line-clamp-1 font-semibold text-red-500">
                 {movie.title}
               </h3>
 
