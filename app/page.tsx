@@ -28,8 +28,7 @@ export default function MovieRow({
             msOverflowStyle: "none",
           }}
         >
-         movies.slice(0, 10) .map((movie) => (
-            <div
+        {(movies || []).slice(0, 10).map((movie) => (
               key={movie.id}
               className="group min-w-[180px] overflow-hidden rounded-2xl bg-[#111] transition duration-300 hover:-translate-y-2 md:min-w-[200px]"
             >
