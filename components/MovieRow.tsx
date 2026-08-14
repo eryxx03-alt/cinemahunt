@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Movie } from "@/lib/tmdb";
 
 interface MovieRowProps {
@@ -27,8 +28,9 @@ export default function MovieRow({
         }}
       >
         {movieList.slice(0, 10).map((movie) => (
-          <div
+          <Link
             key={movie.id}
+            href={`/movie/${movie.id}`}
             className="group min-w-[180px] overflow-hidden rounded-2xl bg-[#111] transition duration-300 hover:-translate-y-2 md:min-w-[200px]"
           >
             {movie.poster_path ? (
@@ -52,7 +54,7 @@ export default function MovieRow({
                 ⭐ {movie.vote_average?.toFixed(1) || "N/A"}
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>
