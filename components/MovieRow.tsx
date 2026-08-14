@@ -1,17 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import { Movie } from "@/lib/tmdb";
 
 interface MovieRowProps {
   title: string;
-  movies: Movie[];
+  movies?: Movie[];
 }
 
 export default function MovieRow({
   title,
-  movies,
+  movies = [],
 }: MovieRowProps) {
+  const movieList = Array.isArray(movies) ? movies : [];
+
   return (
     <section>
       <h2 className="mb-5 text-2xl font-bold text-white md:text-3xl">
@@ -25,10 +26,9 @@ export default function MovieRow({
           msOverflowStyle: "none",
         }}
       >
-        {movies.slice(0, 10).map((movie) => (
-          <Link
+        {movieList.slice(0, 10).map((movie) => (
+          <div
             key={movie.id}
-            href={`/movie/${movie.id}`}
             className="group min-w-[180px] overflow-hidden rounded-2xl bg-[#111] transition duration-300 hover:-translate-y-2 md:min-w-[200px]"
           >
             {movie.poster_path ? (
@@ -52,7 +52,7 @@ export default function MovieRow({
                 ⭐ {movie.vote_average?.toFixed(1) || "N/A"}
               </p>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </section>
