@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Movie, getMovieDetails } from '@/lib/tmdb';
+import Link from "next/link";
+import { useState } from "react";
+import { Movie, getMovieDetails } from "@/lib/tmdb";
 
 interface HeroSectionProps {
   movie: Movie;
@@ -24,19 +25,19 @@ export default function HeroSection({ movie }: HeroSectionProps) {
       const trailer =
         videos.find(
           (video: any) =>
-            video.site === 'YouTube' &&
-            video.type === 'Trailer' &&
+            video.site === "YouTube" &&
+            video.type === "Trailer" &&
             video.official === true
         ) ||
         videos.find(
           (video: any) =>
-            video.site === 'YouTube' &&
-            video.type === 'Trailer'
+            video.site === "YouTube" &&
+            video.type === "Trailer"
         );
 
       setTrailerKey(trailer?.key || null);
     } catch (error) {
-      console.error('Trailer error:', error);
+      console.error("Trailer error:", error);
       setTrailerKey(null);
     } finally {
       setLoadingTrailer(false);
@@ -62,18 +63,31 @@ export default function HeroSection({ movie }: HeroSectionProps) {
           </h1>
 
           <p className="mt-4 line-clamp-3 text-gray-300">
-            {movie.overview || 'Discover movies and watch the latest trailers.'}
+            {movie.overview ||
+              "Discover movies and watch amazing movies."}
           </p>
 
-          <button
-            onClick={handleTrailer}
-            className="mt-6 rounded-lg bg-white px-6 py-3 font-semibold text-black hover:bg-gray-200"
-          >
-            Watch Trailer
-          </button>
+          <div className="mt-6 flex flex-wrap gap-3">
+            {/* WATCH NOW */}
+            <Link
+              href={`/movie/${movie.id}`}
+              className="rounded-lg bg-red-600 px-6 py-3 font-semibold text-white transition hover:bg-red-700"
+            >
+              ▶ WATCH NOW
+            </Link>
+
+            {/* WATCH TRAILER */}
+            <button
+              onClick={handleTrailer}
+              className="rounded-lg bg-white px-6 py-3 font-semibold text-black transition hover:bg-gray-200"
+            >
+             🎬 HERO TRAILER ONLY
+            </button>
+          </div>
         </div>
       </section>
 
+      {/* TRAILER MODAL */}
       {showTrailer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
           <div className="relative w-full max-w-5xl">
