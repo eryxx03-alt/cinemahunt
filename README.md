@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CinemaHunt
 
-## Getting Started
+CinemaHunt is a movie-discovery website built with Next.js, React, Tailwind CSS, and TMDB data.
 
-First, run the development server:
+## What was upgraded
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Responsive navigation with mobile menu and movie search
+- Trending, popular, top-rated, now-playing, and upcoming sections
+- Genre browsing and genre-specific movie pages
+- Movie search page
+- Rich movie detail pages with ratings, release date, runtime, genres, cast, and official trailer
+- Related-movie recommendations
+- Improved About, Contact, Privacy Policy, and Terms pages
+- SEO metadata, sitemap, robots rules, loading/error/404 states
+- More accessible image alt text and buttons
+- Replaced streaming-style wording with legitimate official-trailer language
+- No full-movie hosting or unauthorized download functionality
+
+## Environment variable
+
+Create a `.env.local` file locally or add the same variable in Vercel:
+
+```env
+NEXT_PUBLIC_TMDB_API_KEY=your_tmdb_api_key_here
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Do not commit your real API key to GitHub.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Run locally
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev
+```
 
-## Learn More
+Open `http://localhost:3000`.
 
-To learn more about Next.js, take a look at the following resources:
+## Build
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Vercel deployment
 
-## Deploy on Vercel
+1. Push the updated project to the GitHub repository connected to Vercel.
+2. In Vercel, open the project settings and add `NEXT_PUBLIC_TMDB_API_KEY` under Environment Variables.
+3. Redeploy the project.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## AdSense note
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project includes the existing Google AdSense account meta tag/script. AdSense approval is not guaranteed by code changes. Before applying, add genuinely original editorial content and reviews, verify every page and external link, and make sure the site follows Google's current publisher policies.
+
+## Attribution
+
+CinemaHunt uses TMDB for movie data and images but is not endorsed or certified by TMDB. Trailer playback is provided through YouTube when an official trailer is available.
