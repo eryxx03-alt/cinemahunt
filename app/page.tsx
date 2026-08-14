@@ -5,13 +5,15 @@ import { Movie } from "@/lib/tmdb";
 
 interface MovieRowProps {
   title: string;
-  movies: Movie[];
+  movies?: Movie[];
 }
 
 export default function MovieRow({
   title,
-  movies,
+  movies = [],
 }: MovieRowProps) {
+  const movieList = Array.isArray(movies) ? movies : [];
+
   return (
     <main className="min-h-screen bg-[#050505]">
       <section>
@@ -26,7 +28,7 @@ export default function MovieRow({
             msOverflowStyle: "none",
           }}
         >
-          {movies.slice(0, 10).map((movie) => (
+          {movieList.slice(0, 10).map((movie) => (
             <div
               key={movie.id}
               className="group min-w-[180px] overflow-hidden rounded-2xl bg-[#111] transition duration-300 hover:-translate-y-2 md:min-w-[200px]"
