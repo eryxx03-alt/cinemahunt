@@ -12,21 +12,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: "CinemaHunt",
-  description: "Discover trending, popular, and upcoming movies",
-  verification: {
-    google: "GnVDYdiaco6zuErLYyNbwKXMP-Li3EB17g85uzJZwdE",
-  },
+export const metadata: Metadata = {
+  title: "CinemaHunt – Discover Trending Movies, Ratings & Reviews",
+  description:
+    "Explore trending, top-rated and upcoming movies. Find ratings, trailers and movie details on CinemaHunt.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+      </body>
     </html>
   );
 }
