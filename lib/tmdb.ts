@@ -58,6 +58,10 @@ export async function getUpcomingMovies() {
   return fetchTMDB('/movie/upcoming');
 }
 
+export async function getTopRatedMovies() {
+  return fetchTMDB('/movie/top_rated');
+}
+
 export async function getMovieDetails(movieId: number) {
   return fetchTMDB(`/movie/${movieId}?append_to_response=videos`);
 }
