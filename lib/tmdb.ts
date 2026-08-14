@@ -61,3 +61,11 @@ export async function getUpcomingMovies() {
 export async function getMovieDetails(movieId: number) {
   return fetchTMDB(`/movie/${movieId}?append_to_response=videos`);
 }
+
+export function getImageUrl(
+  path?: string | null,
+  size = 'w500'
+) {
+  if (!path) return '';
+  return `https://image.tmdb.org/t/p/${size}${path}`;
+}
