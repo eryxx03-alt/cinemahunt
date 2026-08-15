@@ -73,3 +73,11 @@ export function getImageUrl(
   if (!path) return '';
   return `https://image.tmdb.org/t/p/${size}${path}`;
 }
+
+export async function getGenres() {
+  return fetchTMDB('/genre/movie/list');
+}
+
+export async function getMoviesByGenre(genreId: number) {
+  return fetchTMDB(`/discover/movie?with_genres=${genreId}`);
+}
