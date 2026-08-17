@@ -16,22 +16,16 @@ export default function MovieRow({
 
   return (
     <section>
-      <h2 className="mb-5 text-2xl font-bold text-white md:text-3xl">
+      <h2 className="mb-6 text-2xl font-bold text-white md:text-3xl">
         {title}
       </h2>
 
-      <div
-        className="flex gap-5 overflow-x-auto pb-5"
-        style={{
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
-      >
-        {movieList.slice(0, 10).map((movie) => (
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        {movieList.slice(0, 100).map((movie) => (
           <Link
             key={movie.id}
             href={`/movie/${movie.id}`}
-            className="group min-w-[180px] overflow-hidden rounded-2xl bg-[#111] transition duration-300 hover:-translate-y-2 md:min-w-[200px]"
+            className="group overflow-hidden rounded-2xl bg-[#111] transition duration-300 hover:-translate-y-2"
           >
             {movie.poster_path ? (
               <img
@@ -50,8 +44,16 @@ export default function MovieRow({
                 {movie.title}
               </h3>
 
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-yellow-400">
                 ⭐ {movie.vote_average?.toFixed(1) || "N/A"}
+              </p>
+
+              <p className="mt-1 text-xs text-gray-400">
+                {movie.release_date?.slice(0, 4) || "Unknown"}
+              </p>
+
+              <p className="mt-2 line-clamp-3 text-xs text-gray-300">
+                {movie.overview || "No description available."}
               </p>
             </div>
           </Link>
