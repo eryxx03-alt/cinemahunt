@@ -6,6 +6,7 @@ import { Movie } from "@/lib/tmdb";
 interface MovieRowProps {
   title: string;
   movies?: Movie[];
+  href?: string;
 }
 
 export default function MovieRow({
