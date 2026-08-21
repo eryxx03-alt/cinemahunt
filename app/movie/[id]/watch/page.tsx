@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getMovieDetails } from "@/lib/tmdb";
+import BackButton from "@/components/BackButton";
 
 export default async function WatchPage({
   params,
@@ -36,7 +37,7 @@ export default async function WatchPage({
   return (
     <main className="min-h-screen bg-black text-white">
 
-      {/* Cinematic movie header */}
+      {/* Cinematic movie section */}
       <section className="relative overflow-hidden">
 
         {/* Backdrop */}
@@ -49,26 +50,26 @@ export default async function WatchPage({
               priority
               className="object-cover opacity-40"
             />
+
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/80 to-black" />
+
             <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
           </div>
         )}
 
         <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-6 md:px-8 md:pt-8">
 
-          {/* Premium Back button */}
-          <button
-            onClick={() => window.history.back()}
-            className="mb-10 inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 hover:-translate-x-1"
-          >
-            ← Back
-          </button>
+          {/* Premium Back Button */}
+          <div className="mb-10">
+            <BackButton />
+          </div>
 
-          {/* Main movie content */}
+          {/* Movie information */}
           <div className="grid items-center gap-8 md:grid-cols-[260px_1fr] lg:grid-cols-[300px_1fr]">
 
             {/* Poster */}
             <div className="relative mx-auto w-full max-w-[300px] overflow-hidden rounded-2xl shadow-2xl shadow-black/60">
+
               {poster ? (
                 <Image
                   src={poster}
@@ -83,9 +84,10 @@ export default async function WatchPage({
                   No Image
                 </div>
               )}
+
             </div>
 
-            {/* Information */}
+            {/* Details */}
             <div className="max-w-3xl">
 
               <p className="mb-3 text-sm font-medium uppercase tracking-[0.25em] text-red-400">
@@ -96,6 +98,7 @@ export default async function WatchPage({
                 {movie.title}
               </h1>
 
+              {/* Rating / Year / Runtime */}
               <div className="mt-5 flex flex-wrap items-center gap-3 text-sm">
 
                 <span className="rounded-full bg-yellow-400/10 px-3 py-1.5 text-yellow-400">
@@ -117,6 +120,7 @@ export default async function WatchPage({
               {/* Genres */}
               {movie.genres?.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
+
                   {movie.genres.slice(0, 4).map((genre: any) => (
                     <span
                       key={genre.id}
@@ -125,6 +129,7 @@ export default async function WatchPage({
                       {genre.name}
                     </span>
                   ))}
+
                 </div>
               )}
 
@@ -146,12 +151,14 @@ export default async function WatchPage({
                 )}
 
                 <button
+                  type="button"
                   className="rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20"
                 >
                   ♡ Save
                 </button>
 
                 <button
+                  type="button"
                   className="rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20"
                 >
                   ↗ Share
@@ -170,7 +177,8 @@ export default async function WatchPage({
         id="trailer"
         className="mx-auto max-w-7xl px-4 pb-16 md:px-8"
       >
-        <div className="mb-5 flex items-center justify-between">
+
+        <div className="mb-5">
           <h2 className="text-2xl font-bold md:text-3xl">
             Official Trailer
           </h2>
@@ -178,6 +186,7 @@ export default async function WatchPage({
 
         {trailer?.key ? (
           <div className="aspect-video overflow-hidden rounded-2xl border border-white/10 bg-zinc-950 shadow-2xl">
+
             <iframe
               className="h-full w-full"
               src={`https://www.youtube.com/embed/${trailer.key}`}
@@ -185,12 +194,14 @@ export default async function WatchPage({
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
             />
+
           </div>
         ) : (
           <div className="flex aspect-video items-center justify-center rounded-2xl border border-white/10 bg-zinc-950 text-zinc-500">
             Official trailer not available.
           </div>
         )}
+
       </section>
 
     </main>
