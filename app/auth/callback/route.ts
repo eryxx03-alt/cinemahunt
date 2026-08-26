@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   }
 
   const response = NextResponse.redirect(
-    new URL("/profile", requestUrl.origin)
+    new URL("/", requestUrl.origin)
   );
 
   const supabase = createServerClient(
@@ -23,6 +23,7 @@ export async function GET(request: Request) {
         getAll() {
           return [];
         },
+
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
             response.cookies.set(name, value, options);
@@ -32,7 +33,8 @@ export async function GET(request: Request) {
     }
   );
 
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  const { error } =
+    await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
     return NextResponse.redirect(
