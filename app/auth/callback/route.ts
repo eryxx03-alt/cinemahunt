@@ -1,26 +1,44 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
-
-  const code = searchParams.get("code");
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
 
   if (!code) {
-    return NextResponse.redirect(`${origin}/signup?error=auth`);
+    return NextResponse.redirect(
+      new URL("/signup?error=auth", requestUrl.origin)
+    );
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+  const response = NextResponse.redirect(
+    new URL("/profile", requestUrl.origin)
   );
 
-  const { data, error } =
-    await supabase.auth.exchangeCodeForSession(code);
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return [];
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options);
+          });
+        },
+      },
+    }
+  );
 
-  if (error || !data.session) {
-    return NextResponse.redirect(`${origin}/signup?error=auth`);
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+  if (error) {
+    return NextResponse.redirect(
+      new URL("/signup?error=auth", requestUrl.origin)
+    );
   }
 
-  return NextResponse.redirect(`${origin}/`);
+  return response;
 }
