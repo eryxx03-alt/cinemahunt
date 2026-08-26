@@ -6,6 +6,7 @@ export interface Movie {
   backdrop_path?: string | null;
   release_date?: string;
   vote_average?: number;
+  genre_ids?: number[];
 }
 
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
@@ -39,12 +40,11 @@ async function fetchMultiplePages(
 
   const responses = await Promise.all(requests);
 
-  // Combine all pages
   const allMovies = responses.flatMap(
     (response: any) => response.results || []
   );
 
-  // Remove duplicate movies using TMDB movie ID
+  // Remove duplicate movies by TMDB ID
   const uniqueMovies = Array.from(
     new Map(
       allMovies.map((movie: Movie) => [movie.id, movie])
