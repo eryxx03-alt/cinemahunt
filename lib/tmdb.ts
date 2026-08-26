@@ -39,10 +39,20 @@ async function fetchMultiplePages(
 
   const responses = await Promise.all(requests);
 
+  // Combine all pages
+  const allMovies = responses.flatMap(
+    (response: any) => response.results || []
+  );
+
+  // Remove duplicate movies using TMDB movie ID
+  const uniqueMovies = Array.from(
+    new Map(
+      allMovies.map((movie: Movie) => [movie.id, movie])
+    ).values()
+  );
+
   return {
-    results: responses.flatMap(
-      (response: any) => response.results || []
-    ),
+    results: uniqueMovies,
   };
 }
 
@@ -108,9 +118,7 @@ export async function getEnglishMovies() {
   );
 }
 
-export async function getMovieDetails(
-  movieId: number
-) {
+export async function getMovieDetails(movieId: number) {
   return fetchTMDB(
     `/movie/${movieId}?append_to_response=videos`
   );
@@ -124,6 +132,7 @@ export function getImageUrl(
 
   return `https://image.tmdb.org/t/p/${size}${path}`;
 }
+
 export async function getGenres() {
   return fetchTMDB("/genre/movie/list");
 }
@@ -137,9 +146,7 @@ export async function getMoviesByGenre(
   );
 }
 
-export async function searchMovies(
-  query: string
-) {
+export async function searchMovies(query: string) {
   return fetchTMDB(
     `/search/movie?query=${encodeURIComponent(query)}`
   );

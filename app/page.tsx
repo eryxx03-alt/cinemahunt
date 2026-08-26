@@ -60,64 +60,66 @@ export default async function HomePage() {
     <main className="min-h-screen bg-[#050505] text-white">
       <Navbar />
 
+      {/* Hero */}
       {trendingMovies.length > 0 && (
         <HeroSection movie={trendingMovies[0]} />
       )}
 
-      <div className="mx-auto max-w-7xl space-y-12 px-6 pb-20 pt-10">
+      {/* Movie Sections */}
+      <div className="mx-auto max-w-7xl space-y-14 px-6 pb-20 pt-12">
 
         <MovieRow
-          title="🔥 Trending Movies"
+          title="Trending Movies"
           movies={trendingMovies}
         />
 
         <MovieRow
-          title="⭐ Popular Movies"
+          title="Popular Movies"
           movies={popularMovies}
         />
 
         <MovieRow
-          title="🏆 Top Rated Movies"
+          title="Top Rated Movies"
           movies={topRatedMovies}
         />
 
         <MovieRow
-          title="🎬 Now Playing"
+          title="Now Playing"
           movies={nowPlayingMovies}
         />
 
         <MovieRow
-          title="🚀 Upcoming Movies"
+          title="Upcoming Movies"
           movies={upcomingMovies}
         />
 
         <MovieRow
-          title="💥 Action Movies"
+          title="Action Movies"
           movies={actionMovies}
         />
 
         <MovieRow
-          title="🕵️ Crime Movies"
+          title="Crime Movies"
           movies={crimeMovies}
         />
 
         <MovieRow
-          title="😱 Thriller Movies"
+          title="Thriller Movies"
           movies={thrillerMovies}
         />
 
         <MovieRow
-          title="👻 Horror Movies"
+          title="Horror Movies"
           movies={horrorMovies}
         />
 
         <MovieRow
-          title="🇮🇳 Hindi Movies"
+          title="Hindi Movies"
           movies={hindiMovies}
         />
 
         <MovieRow
-          title="🌎 English Movies"
+          title="English Movies"
           movies={englishMovies}
         />
 
