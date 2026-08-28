@@ -1,4 +1,3 @@
-```tsx
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -53,7 +52,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
@@ -79,4 +80,3 @@ export default function RootLayout({
     </html>
   );
 }
-```
