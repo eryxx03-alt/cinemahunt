@@ -26,21 +26,19 @@ export default async function WatchPage({
         video.type === "Trailer"
     );
 
-  const backdrop = movie.backdrop_path
-    ? `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
+  const poster = movie.poster_path
+    ? "https://image.tmdb.org/t/p/w500" + movie.poster_path
     : null;
 
-  const poster = movie.poster_path
-    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+  const backdrop = movie.backdrop_path
+    ? "https://image.tmdb.org/t/p/original" + movie.backdrop_path
     : null;
 
   return (
     <main className="min-h-screen bg-black text-white">
 
-      {/* Cinematic movie section */}
       <section className="relative overflow-hidden">
 
-        {/* Backdrop */}
         {backdrop && (
           <div className="absolute inset-0">
             <Image
@@ -57,18 +55,15 @@ export default async function WatchPage({
           </div>
         )}
 
-        <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-6 md:px-8 md:pt-8">
+        <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-6 md:px-8">
 
-          {/* Premium Back Button */}
           <div className="mb-10">
             <BackButton />
           </div>
 
-          {/* Movie information */}
-          <div className="grid items-center gap-8 md:grid-cols-[260px_1fr] lg:grid-cols-[300px_1fr]">
+          <div className="grid items-center gap-8 md:grid-cols-[280px_1fr] lg:grid-cols-[300px_1fr]">
 
-            {/* Poster */}
-            <div className="relative mx-auto w-full max-w-[300px] overflow-hidden rounded-2xl shadow-2xl shadow-black/60">
+            <div className="overflow-hidden rounded-2xl shadow-2xl">
 
               {poster ? (
                 <Image
@@ -87,7 +82,6 @@ export default async function WatchPage({
 
             </div>
 
-            {/* Details */}
             <div className="max-w-3xl">
 
               <p className="mb-3 text-sm font-medium uppercase tracking-[0.25em] text-red-400">
@@ -98,7 +92,6 @@ export default async function WatchPage({
                 {movie.title}
               </h1>
 
-              {/* Rating / Year / Runtime */}
               <div className="mt-5 flex flex-wrap items-center gap-3 text-sm">
 
                 <span className="rounded-full bg-yellow-400/10 px-3 py-1.5 text-yellow-400">
@@ -106,7 +99,9 @@ export default async function WatchPage({
                 </span>
 
                 <span className="text-zinc-400">
-                  {movie.release_date?.slice(0, 4) || "Unknown"}
+                  {movie.release_date
+                    ? movie.release_date.slice(0, 4)
+                    : "Unknown"}
                 </span>
 
                 {movie.runtime && (
@@ -117,14 +112,13 @@ export default async function WatchPage({
 
               </div>
 
-              {/* Genres */}
-              {movie.genres?.length > 0 && (
+              {movie.genres && movie.genres.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
 
                   {movie.genres.slice(0, 4).map((genre: any) => (
                     <span
                       key={genre.id}
-                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-300 backdrop-blur-md"
+                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-300"
                     >
                       {genre.name}
                     </span>
@@ -133,64 +127,40 @@ export default async function WatchPage({
                 </div>
               )}
 
-              {/* Description */}
               <p className="mt-7 max-w-2xl text-base leading-7 text-zinc-300 md:text-lg">
                 {movie.overview || "No description available."}
               </p>
 
-              {/* Buttons */}
-              <div className="mt-8 flex flex-wrap gap-3">
-
-                {trailer?.key && (
-                  <a
-                    href="#trailer"
-                    className="rounded-full bg-white px-6 py-3 text-sm font-bold text-black transition-all duration-300 hover:scale-105 hover:bg-zinc-200"
-                  >
-                    ▶ Watch Trailer
-                  </a>
-                )}
-
-                <button
-                  type="button"
-                  className="rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20"
+              {trailer?.key && (
+                <a
+                  href="#trailer"
+                  className="mt-8 inline-block rounded-full bg-white px-6 py-3 text-sm font-bold text-black transition hover:scale-105 hover:bg-zinc-200"
                 >
-                  ♡ Save
-                </button>
-
-                <button
-                  type="button"
-                  className="rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20"
-                >
-                  ↗ Share
-                </button>
-
-              </div>
+                  ▶ Watch Trailer
+                </a>
+              )}
 
             </div>
           </div>
-
         </div>
       </section>
 
-      {/* Trailer */}
       <section
         id="trailer"
-        className="mx-auto max-w-7xl px-4 pb-16 md:px-8"
+        className="mx-auto max-w-7xl px-4 pb-16 pt-10 md:px-8"
       >
 
-        <div className="mb-5">
-          <h2 className="text-2xl font-bold md:text-3xl">
-            Official Trailer
-          </h2>
-        </div>
+        <h2 className="mb-5 text-2xl font-bold md:text-3xl">
+          Official Trailer
+        </h2>
 
         {trailer?.key ? (
           <div className="aspect-video overflow-hidden rounded-2xl border border-white/10 bg-zinc-950 shadow-2xl">
 
             <iframe
               className="h-full w-full"
-              src={`https://www.youtube.com/embed/${trailer.key}`}
-              title={`${movie.title} Official Trailer`}
+              src={"https://www.youtube.com/embed/" + trailer.key}
+              title={movie.title + " Official Trailer"}
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
             />

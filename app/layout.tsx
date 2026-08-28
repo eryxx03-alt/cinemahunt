@@ -1,3 +1,4 @@
+```tsx
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -14,9 +15,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CinemaHunt – Discover Trending Movies, Ratings & Reviews",
+  title: "CinemaHunt",
   description:
     "Explore trending, top-rated and upcoming movies. Find ratings, trailers and movie details on CinemaHunt.",
+
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
+
+  openGraph: {
+    title: "CinemaHunt",
+    description:
+      "Explore trending, top-rated and upcoming movies on CinemaHunt.",
+    siteName: "CinemaHunt",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -49,3 +64,4 @@ export default function RootLayout({
     </html>
   );
 }
+```
