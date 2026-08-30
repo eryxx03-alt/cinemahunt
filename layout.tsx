@@ -25,7 +25,11 @@ export const metadata: Metadata = {
     "CinemaHunt helps movie fans discover trending, popular, top-rated, and upcoming films with movie information, cast details, and official trailers.",
 
   applicationName: "CinemaHunt",
-
+icons: {
+  icon: "/logo.png",
+  shortcut: "/logo.png",
+  apple: "/logo.png",
+},
   keywords: [
     "movies",
     "movie discovery",
