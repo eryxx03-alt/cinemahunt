@@ -1,0 +1,6 @@
+<Image
+  src="/logo.png"
+  alt="CinemaHunt"
+  width={40}
+  height={40}
+/>

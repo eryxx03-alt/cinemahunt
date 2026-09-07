@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Navbar() {
@@ -10,9 +11,20 @@ export default function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="text-2xl font-bold text-white"
+          className="flex items-center gap-2"
         >
-          Cinema<span className="text-red-500">Hunt</span>
+          <Image
+            src="/logo.png"
+            alt="CinemaHunt"
+            width={40}
+            height={40}
+            className="object-contain"
+            priority
+          />
+
+          <span className="text-2xl font-bold text-white">
+            Cinema<span className="text-red-500">Hunt</span>
+          </span>
         </Link>
 
         {/* Navigation */}

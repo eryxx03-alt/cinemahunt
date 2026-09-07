@@ -5,11 +5,11 @@ import {
   getTopRatedMovies,
 } from "@/lib/tmdb";
 
+const baseUrl = "https://cinemahunt10.vercel.app";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://cinemahunt10.vercel.app";
   const now = new Date();
 
-  // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
@@ -56,21 +56,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    // Fetch movie lists from TMDB
     const [trending, popular, topRated] = await Promise.all([
       getTrendingMovies(),
       getPopularMovies(),
       getTopRatedMovies(),
     ]);
 
-    // Combine all movies
     const allMovies = [
       ...(trending?.results || []),
       ...(popular?.results || []),
       ...(topRated?.results || []),
     ];
 
-    // Remove duplicate movies
     const uniqueMovies = Array.from(
       new Map(
         allMovies
@@ -79,10 +76,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ).values()
     );
 
-    // Create movie URLs
     const moviePages: MetadataRoute.Sitemap = uniqueMovies.map((movie) => ({
       url: `${baseUrl}/movie/${movie.id}`,
-      lastModified: now,
+      lastModified: movie.release_date
+        ? new Date(movie.release_date)
+        : now,
       changeFrequency: "weekly",
       priority: 0.7,
     }));
@@ -91,7 +89,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   } catch (error) {
     console.error("Failed to generate movie sitemap:", error);
 
-    // Always return the static pages if TMDB fails
     return staticPages;
   }
 }

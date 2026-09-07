@@ -12,6 +12,11 @@ export interface Movie {
   original_language?: string;
 }
 
+export interface Genre {
+  id: number;
+  name: string;
+}
+
 interface TMDBResponse {
   page: number;
   results: Movie[];
@@ -19,7 +24,12 @@ interface TMDBResponse {
   total_results: number;
 }
 
+interface GenreResponse {
+  genres: Genre[];
+}
+
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+
 const BASE_URL = "https://api.themoviedb.org/3";
 
 async function fetchTMDB(
@@ -27,7 +37,9 @@ async function fetchTMDB(
   params: Record<string, string> = {}
 ): Promise<TMDBResponse> {
   if (!API_KEY) {
-    throw new Error("NEXT_PUBLIC_TMDB_API_KEY is not configured");
+    throw new Error(
+      "NEXT_PUBLIC_TMDB_API_KEY is not configured"
+    );
   }
 
   const searchParams = new URLSearchParams({
@@ -46,38 +58,58 @@ async function fetchTMDB(
   );
 
   if (!response.ok) {
-    throw new Error(`TMDB request failed: ${response.status}`);
+    throw new Error(
+      `TMDB request failed: ${response.status}`
+    );
   }
 
   return response.json();
 }
 
-// Trending movies
+// ===============================
+// TRENDING
+// ===============================
+
 export async function getTrendingMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/trending/movie/week");
 }
 
-// Popular movies
+// ===============================
+// POPULAR
+// ===============================
+
 export async function getPopularMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/movie/popular");
 }
 
-// Top rated movies
+// ===============================
+// TOP RATED
+// ===============================
+
 export async function getTopRatedMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/movie/top_rated");
 }
 
-// Now playing
+// ===============================
+// NOW PLAYING
+// ===============================
+
 export async function getNowPlayingMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/movie/now_playing");
 }
 
-// Upcoming movies
+// ===============================
+// UPCOMING
+// ===============================
+
 export async function getUpcomingMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/movie/upcoming");
 }
 
-// Action movies
+// ===============================
+// ACTION
+// ===============================
+
 export async function getActionMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/discover/movie", {
     with_genres: "28",
@@ -85,7 +117,10 @@ export async function getActionMovies(): Promise<TMDBResponse> {
   });
 }
 
-// Crime movies
+// ===============================
+// CRIME
+// ===============================
+
 export async function getCrimeMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/discover/movie", {
     with_genres: "80",
@@ -93,7 +128,10 @@ export async function getCrimeMovies(): Promise<TMDBResponse> {
   });
 }
 
-// Thriller movies
+// ===============================
+// THRILLER
+// ===============================
+
 export async function getThrillerMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/discover/movie", {
     with_genres: "53",
@@ -101,7 +139,10 @@ export async function getThrillerMovies(): Promise<TMDBResponse> {
   });
 }
 
-// Horror movies
+// ===============================
+// HORROR
+// ===============================
+
 export async function getHorrorMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/discover/movie", {
     with_genres: "27",
@@ -109,7 +150,10 @@ export async function getHorrorMovies(): Promise<TMDBResponse> {
   });
 }
 
-// Hindi movies
+// ===============================
+// HINDI
+// ===============================
+
 export async function getHindiMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/discover/movie", {
     with_original_language: "hi",
@@ -117,7 +161,10 @@ export async function getHindiMovies(): Promise<TMDBResponse> {
   });
 }
 
-// English movies
+// ===============================
+// ENGLISH
+// ===============================
+
 export async function getEnglishMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/discover/movie", {
     with_original_language: "en",
@@ -125,10 +172,15 @@ export async function getEnglishMovies(): Promise<TMDBResponse> {
   });
 }
 
-// Movie details
+// ===============================
+// MOVIE DETAILS
+// ===============================
+
 export async function getMovieDetails(movieId: number) {
   if (!API_KEY) {
-    throw new Error("NEXT_PUBLIC_TMDB_API_KEY is not configured");
+    throw new Error(
+      "NEXT_PUBLIC_TMDB_API_KEY is not configured"
+    );
   }
 
   const searchParams = new URLSearchParams({
@@ -147,17 +199,84 @@ export async function getMovieDetails(movieId: number) {
   );
 
   if (!response.ok) {
-    throw new Error(`TMDB movie details failed: ${response.status}`);
+    throw new Error(
+      `TMDB movie details failed: ${response.status}`
+    );
   }
 
   return response.json();
 }
 
-// Search movies
+// ===============================
+// GENRES
+// ===============================
+
+export async function getGenres(): Promise<GenreResponse> {
+  if (!API_KEY) {
+    throw new Error(
+      "NEXT_PUBLIC_TMDB_API_KEY is not configured"
+    );
+  }
+
+  const searchParams = new URLSearchParams({
+    api_key: API_KEY,
+    language: "en-US",
+  });
+
+  const response = await fetch(
+    `${BASE_URL}/genre/movie/list?${searchParams.toString()}`,
+    {
+      next: {
+        revalidate: 3600,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `TMDB genres failed: ${response.status}`
+    );
+  }
+
+  return response.json();
+}
+
+// ===============================
+// MOVIES BY GENRE
+// ===============================
+
+export async function getMoviesByGenre(
+  genreId: number
+): Promise<TMDBResponse> {
+  return fetchTMDB("/discover/movie", {
+    with_genres: String(genreId),
+    sort_by: "popularity.desc",
+  });
+}
+
+// ===============================
+// SEARCH MOVIES
+// ===============================
+
 export async function searchMovies(
   query: string
 ): Promise<TMDBResponse> {
   return fetchTMDB("/search/movie", {
     query,
   });
+}
+
+// ===============================
+// IMAGE URL
+// ===============================
+
+export function getImageUrl(
+  path?: string | null,
+  size = "w500"
+): string {
+  if (!path) {
+    return "";
+  }
+
+  return `https://image.tmdb.org/t/p/${size}${path}`;
 }
