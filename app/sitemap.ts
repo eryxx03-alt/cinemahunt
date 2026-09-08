@@ -10,48 +10,35 @@ const baseUrl = "https://cinemahunt10.vercel.app";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
+  // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: now,
-      changeFrequency: "daily",
-      priority: 1,
     },
     {
       url: `${baseUrl}/movies`,
       lastModified: now,
-      changeFrequency: "daily",
-      priority: 0.9,
     },
     {
       url: `${baseUrl}/popular`,
       lastModified: now,
-      changeFrequency: "daily",
-      priority: 0.9,
     },
     {
       url: `${baseUrl}/about`,
       lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
     },
     {
       url: `${baseUrl}/contact`,
       lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
     },
     {
       url: `${baseUrl}/privacy`,
       lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
     },
     {
       url: `${baseUrl}/terms`,
       lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
     },
   ];
 
@@ -62,32 +49,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       getTopRatedMovies(),
     ]);
 
-    const allMovies = [
-      ...(trending?.results || []),
-      ...(popular?.results || []),
-      ...(topRated?.results || []),
+    // Combine all movies
+    const movies = [
+      ...trending.results,
+      ...popular.results,
+      ...topRated.results,
     ];
 
+    // Remove duplicate movie IDs
     const uniqueMovies = Array.from(
-      new Map(
-        allMovies
-          .filter((movie) => movie?.id)
-          .map((movie) => [movie.id, movie])
-      ).values()
+      new Map(movies.map((movie) => [movie.id, movie])).values()
     );
 
-    const moviePages: MetadataRoute.Sitemap = uniqueMovies.map((movie) => ({
-      url: `${baseUrl}/movie/${movie.id}`,
-      lastModified: movie.release_date
-        ? new Date(movie.release_date)
-        : now,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    }));
+    // Create movie URLs
+    const moviePages: MetadataRoute.Sitemap = uniqueMovies.map(
+      (movie) => ({
+        url: `${baseUrl}/movie/${movie.id}`,
+        lastModified: now,
+      })
+    );
 
     return [...staticPages, ...moviePages];
   } catch (error) {
-    console.error("Failed to generate movie sitemap:", error);
+    console.error("Sitemap error:", error);
 
     return staticPages;
   }

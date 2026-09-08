@@ -14,9 +14,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CinemaHunt",
+  metadataBase: new URL("https://cinemahunt10.vercel.app"),
+
+  title: {
+    default: "CinemaHunt",
+    template: "%s | CinemaHunt",
+  },
+
+  applicationName: "CinemaHunt",
+
   description:
     "Explore trending, top-rated and upcoming movies. Find ratings, trailers and movie details on CinemaHunt.",
+
+  alternates: {
+    canonical: "https://cinemahunt10.vercel.app",
+  },
 
   icons: {
     icon: "/logo.png",
@@ -30,14 +42,20 @@ export const metadata: Metadata = {
       "Explore trending, top-rated and upcoming movies on CinemaHunt.",
     siteName: "CinemaHunt",
     type: "website",
+    url: "https://cinemahunt10.vercel.app",
   },
+
+  // Add your Google verification token here when you have it:
+  // verification: {
+  //   google: "YOUR_GOOGLE_VERIFICATION_TOKEN",
+  // },
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html
       lang="en"
