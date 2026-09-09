@@ -68,21 +68,21 @@ function MovieRow({
   movies: Movie[];
 }) {
   return (
-    <section className="mb-12 md:mb-14">
-      <div className="mb-5 flex items-end justify-between gap-3">
+    <section className="mb-14 md:mb-16">
+      <div className="mb-6 flex items-end justify-between gap-4">
         <div className="min-w-0">
-          <h2 className="text-xl font-bold text-white sm:text-2xl md:text-3xl">
+          <h2 className="text-xl font-black tracking-tight text-white sm:text-2xl md:text-3xl">
             {title}
           </h2>
 
-          <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
+          <p className="mt-1.5 text-xs leading-5 text-zinc-500 sm:text-sm">
             {description}
           </p>
         </div>
 
         <Link
           href="/movies"
-          className="shrink-0 rounded-md px-2 py-1 text-xs font-semibold text-red-400 transition hover:bg-red-500/10 hover:text-red-300 sm:text-sm"
+          className="shrink-0 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-bold text-zinc-400 transition-all duration-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400 sm:px-4 sm:text-sm"
         >
           View All →
         </Link>
@@ -98,7 +98,7 @@ function MovieRow({
           ))}
         </div>
       ) : (
-        <div className="rounded-xl border border-white/10 bg-white/5 px-6 py-10 text-center">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-12 text-center">
           <p className="text-sm text-zinc-500">
             No movies available.
           </p>
@@ -136,20 +136,20 @@ export default async function HomePage({
 
     return (
       <main className="min-h-screen overflow-x-hidden bg-black text-white">
-        {/* FILTER HEADER */}
-        <section className="relative border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black px-4 pb-10 pt-28 sm:px-6">
+        <section className="relative border-b border-white/10 bg-gradient-to-b from-zinc-950 via-black to-black px-4 pb-12 pt-28 sm:px-6">
           <div className="mx-auto max-w-7xl">
             <div className="mb-8">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-red-500">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.25em] text-red-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-red-500 shadow-lg shadow-red-500/50" />
                 CinemaHunt
-              </p>
+              </div>
 
-              <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">
+              <h1 className="text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
                 Discover Movies
               </h1>
 
-              <p className="mt-2 text-sm text-zinc-400 sm:text-base">
-                Find movies using your favorite filters.
+              <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-400 sm:text-base">
+                Find your next favorite movie using powerful filters.
               </p>
             </div>
 
@@ -157,11 +157,14 @@ export default async function HomePage({
           </div>
         </section>
 
-        {/* FILTERED RESULTS */}
-        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-          <div className="mb-7 flex items-center justify-between gap-4">
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-14">
+          <div className="mb-8 flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-bold sm:text-3xl">
+              <p className="mb-1 text-[10px] font-black uppercase tracking-[0.25em] text-red-500">
+                Your selection
+              </p>
+
+              <h2 className="text-2xl font-black sm:text-3xl">
                 Filtered Results
               </h2>
 
@@ -172,7 +175,7 @@ export default async function HomePage({
 
             <Link
               href="/"
-              className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold transition hover:border-red-500/30 hover:bg-white/10"
+              className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-bold transition-all duration-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
             >
               Reset
             </Link>
@@ -185,10 +188,10 @@ export default async function HomePage({
               movies={filteredMovies}
             />
           ) : (
-            <div className="rounded-xl border border-white/10 bg-white/5 px-6 py-16 text-center">
-              <div className="mb-4 text-4xl">🎬</div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-20 text-center">
+              <div className="mb-4 text-5xl">🎬</div>
 
-              <p className="text-lg font-semibold">
+              <p className="text-lg font-bold">
                 No movies found
               </p>
 
@@ -227,135 +230,156 @@ export default async function HomePage({
 
   const hero = trending[0];
 
+  const heroTitle =
+    hero?.title ||
+    hero?.name ||
+    "Discover Your Next Favorite";
+
+  const heroReleaseDate =
+    hero?.release_date ||
+    hero?.first_air_date ||
+    "";
+
   const heroHasRating =
     hero?.vote_average !== null &&
     hero?.vote_average !== undefined &&
-    Number(hero?.vote_average) > 0;
+    Number(hero.vote_average) > 0;
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-black text-white">
       {/* HERO */}
       {hero ? (
-        <section className="relative flex min-h-[70vh] items-end overflow-hidden sm:min-h-[75vh]">
+        <section className="group relative min-h-[720px] overflow-hidden sm:min-h-[760px] lg:min-h-[820px]">
+          {/* BACKGROUND */}
+          <Image
+            src={imageUrl(hero.backdrop_path, "original")}
+            alt={heroTitle}
+            fill
+            priority
+            sizes="100vw"
+            className="scale-105 object-cover object-center transition-transform duration-[12000ms] ease-out group-hover:scale-110"
+          />
+
+          {/* CINEMATIC GRADIENTS */}
+          <div className="absolute inset-0 bg-black/45" />
+
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/75 to-black/20" />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
+
+          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black to-transparent" />
+
           {/* TOP RIGHT ACTIONS */}
-          <div className="absolute right-4 top-24 z-30 flex items-center gap-2 sm:right-6 sm:top-28 md:right-10">
+          <div className="absolute right-4 top-24 z-20 flex items-center gap-2 sm:right-6 sm:top-28 md:right-10">
             <Link
               href="/movies"
-              className="group flex items-center gap-2 rounded-xl border border-white/15 bg-black/40 px-4 py-2.5 text-sm font-semibold text-white shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-red-500/50 hover:bg-red-600/90"
+              className="group/action flex items-center gap-2 rounded-xl border border-white/15 bg-black/40 px-3 py-2.5 text-xs font-bold text-white shadow-2xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-red-500/50 hover:bg-red-600 sm:px-4 sm:text-sm"
             >
-              <span className="text-base transition-transform duration-300 group-hover:scale-110">
+              <span className="transition-transform duration-300 group-hover/action:scale-110">
                 🎬
               </span>
-
-              <span>Movies</span>
+              <span className="hidden sm:inline">
+                Movies
+              </span>
             </Link>
 
             <Link
               href="/watchlist"
-              className="group flex items-center gap-2 rounded-xl border border-white/15 bg-black/40 px-4 py-2.5 text-sm font-semibold text-white shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-red-500/50 hover:bg-red-600/90"
+              className="group/action flex items-center gap-2 rounded-xl border border-white/15 bg-black/40 px-3 py-2.5 text-xs font-bold text-white shadow-2xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-red-500/50 hover:bg-red-600 sm:px-4 sm:text-sm"
             >
-              <span className="text-lg leading-none transition-transform duration-300 group-hover:scale-110">
+              <span className="text-base leading-none transition-transform duration-300 group-hover/action:scale-110">
                 ♡
               </span>
-
-              <span>Wishlist</span>
+              <span className="hidden sm:inline">
+                Wishlist
+              </span>
             </Link>
           </div>
 
-          {/* HERO BACKGROUND */}
-          <Image
-            src={imageUrl(hero.backdrop_path, "original")}
-            alt={hero.title || hero.name || "CinemaHunt"}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-
-          {/* CINEMATIC OVERLAYS */}
-          <div className="absolute inset-0 bg-black/55" />
-
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent" />
-
           {/* HERO CONTENT */}
-          <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-16 pt-24 sm:px-6 sm:pb-20 md:pb-28">
-            <div className="max-w-3xl">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-red-500 sm:mb-4 sm:text-sm sm:tracking-[0.3em]">
-                CinemaHunt
-              </p>
+          <div className="relative z-10 mx-auto flex min-h-[720px] max-w-7xl items-end px-4 pb-20 pt-32 sm:min-h-[760px] sm:px-6 sm:pb-24 lg:min-h-[820px] lg:pb-28">
+            <div className="max-w-4xl">
+              {/* BADGE */}
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-red-500/25 bg-red-500/10 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.25em] text-red-400 backdrop-blur-md sm:text-xs">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500 shadow-lg shadow-red-500/60" />
+                Trending Now
+              </div>
 
-              <h1 className="text-3xl font-black leading-tight sm:text-4xl md:text-6xl lg:text-7xl">
-                {hero.title || hero.name}
+              {/* TITLE */}
+              <h1 className="max-w-4xl text-4xl font-black leading-[0.98] tracking-[-0.03em] text-white drop-shadow-2xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
+                {heroTitle}
               </h1>
 
-              <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-gray-300 sm:mt-4 sm:gap-4 sm:text-sm">
-                {(hero.release_date ||
-                  hero.first_air_date) && (
-                  <span>
-                    {(
-                      hero.release_date ||
-                      hero.first_air_date ||
-                      ""
-                    ).slice(0, 4)}
+              {/* META */}
+              <div className="mt-5 flex flex-wrap items-center gap-3 text-xs sm:mt-6 sm:gap-4 sm:text-sm">
+                {heroReleaseDate && (
+                  <span className="font-semibold text-zinc-300">
+                    {heroReleaseDate.slice(0, 4)}
                   </span>
                 )}
 
-                {heroHasRating ? (
-                  <span className="font-semibold text-yellow-400">
+                {heroHasRating && (
+                  <span className="font-bold text-yellow-400">
                     ⭐ {Number(hero.vote_average).toFixed(1)}
-                  </span>
-                ) : (
-                  <span className="rounded-md bg-gray-800 px-2 py-1 text-xs text-gray-400">
-                    TBA
                   </span>
                 )}
 
                 {hero.original_language && (
-                  <span className="uppercase text-zinc-400">
-                    🌐 {hero.original_language}
+                  <span className="rounded-md border border-white/10 bg-white/[0.06] px-2 py-1 uppercase text-zinc-400 backdrop-blur-md">
+                    {hero.original_language}
                   </span>
                 )}
+
+                <span className="rounded-md border border-white/10 bg-white/[0.06] px-2 py-1 text-zinc-400 backdrop-blur-md">
+                  HD
+                </span>
               </div>
 
-              <p className="mt-4 line-clamp-3 max-w-2xl text-sm leading-6 text-gray-300 sm:mt-6 sm:text-base sm:leading-7 md:text-lg">
+              {/* OVERVIEW */}
+              <p className="mt-5 line-clamp-3 max-w-2xl text-sm leading-6 text-zinc-300 drop-shadow-lg sm:mt-6 sm:text-base sm:leading-7 md:text-lg md:leading-8">
                 {hero.overview ||
-                  "Discover movies and TV shows on CinemaHunt."}
+                  "Discover movies, ratings, trailers and more on CinemaHunt."}
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-3 sm:mt-8 sm:gap-4">
+              {/* BUTTONS */}
+              <div className="mt-7 flex flex-wrap gap-3 sm:mt-9 sm:gap-4">
                 <Link
                   href={`/movie/${hero.id}`}
-                  className="rounded-lg bg-red-600 px-5 py-2.5 text-sm font-bold transition-all duration-200 hover:bg-red-700 hover:shadow-lg hover:shadow-red-600/20 sm:px-7 sm:py-3 sm:text-base"
+                  className="group/button flex items-center gap-2 rounded-xl bg-red-600 px-5 py-3 text-sm font-black text-white shadow-xl shadow-red-950/50 transition-all duration-300 hover:-translate-y-0.5 hover:bg-red-500 hover:shadow-red-600/30 sm:px-7 sm:py-3.5 sm:text-base"
                 >
+                  <span className="text-base transition-transform duration-300 group-hover/button:scale-110">
+                    ▶
+                  </span>
                   View Details
                 </Link>
 
                 <Link
                   href="/movies"
-                  className="rounded-lg border border-white/10 bg-white/10 px-5 py-2.5 text-sm font-bold backdrop-blur transition-all duration-200 hover:border-white/20 hover:bg-white/20 sm:px-7 sm:py-3 sm:text-base"
+                  className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/20 sm:px-7 sm:py-3.5 sm:text-base"
                 >
                   Browse Movies
+                  <span>→</span>
                 </Link>
               </div>
             </div>
           </div>
         </section>
       ) : (
-        <section className="flex min-h-[60vh] items-center justify-center px-4">
+        <section className="flex min-h-[70vh] items-center justify-center bg-gradient-to-b from-zinc-950 to-black px-4">
           <div className="text-center">
-            <h1 className="text-3xl font-bold sm:text-4xl">
+            <div className="mb-5 text-5xl">🎬</div>
+
+            <h1 className="text-3xl font-black sm:text-4xl">
               Welcome to CinemaHunt
             </h1>
 
-            <p className="mt-4 text-sm text-gray-400 sm:text-base">
-              Discover your next movie.
+            <p className="mt-4 text-sm text-zinc-400 sm:text-base">
+              Discover your next favorite movie.
             </p>
 
             <Link
               href="/movies"
-              className="mt-6 inline-block rounded-lg bg-red-600 px-6 py-3 text-sm font-semibold transition hover:bg-red-700 sm:text-base"
+              className="mt-7 inline-flex rounded-xl bg-red-600 px-6 py-3 font-bold transition hover:bg-red-500"
             >
               Browse Movies
             </Link>
@@ -363,13 +387,15 @@ export default async function HomePage({
         </section>
       )}
 
-      {/* HOMEPAGE FILTERS */}
-      <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6">
-        <HomeFilters />
+      {/* FILTERS */}
+      <section className="relative z-20 mx-auto -mt-6 max-w-7xl px-4 sm:px-6">
+        <div className="rounded-2xl border border-white/10 bg-zinc-950/90 p-1 shadow-2xl shadow-black/50 backdrop-blur-2xl">
+          <HomeFilters />
+        </div>
       </section>
 
       {/* MOVIE SECTIONS */}
-      <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
+      <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 sm:py-16">
         <MovieRow
           title="🔥 Trending Now"
           description="What people are watching and talking about right now"
