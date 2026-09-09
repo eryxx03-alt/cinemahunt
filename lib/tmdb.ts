@@ -64,6 +64,10 @@ async function fetchTMDB(
   return response.json();
 }
 
+/* ----------------------------------------
+   HOME MOVIES
+----------------------------------------- */
+
 export async function getTrendingMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/trending/movie/week");
 }
@@ -83,6 +87,10 @@ export async function getNowPlayingMovies(): Promise<TMDBResponse> {
 export async function getUpcomingMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/movie/upcoming");
 }
+
+/* ----------------------------------------
+   GENRE MOVIES
+----------------------------------------- */
 
 export async function getActionMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/discover/movie", {
@@ -112,6 +120,10 @@ export async function getHorrorMovies(): Promise<TMDBResponse> {
   });
 }
 
+/* ----------------------------------------
+   LANGUAGE MOVIES
+----------------------------------------- */
+
 export async function getHindiMovies(): Promise<TMDBResponse> {
   return fetchTMDB("/discover/movie", {
     with_original_language: "hi",
@@ -127,7 +139,7 @@ export async function getEnglishMovies(): Promise<TMDBResponse> {
 }
 
 /* ----------------------------------------
-   SMART MOVIE DISCOVERY
+   SMART FILTERING & SORTING
 ----------------------------------------- */
 
 export async function discoverMovies({
@@ -157,7 +169,6 @@ export async function discoverMovies({
     params.with_original_language = language;
   }
 
-  // Helps Top Rated avoid movies with only a tiny number of votes.
   if (sortBy === "vote_average.desc") {
     params.vote_count_gte = "100";
   }
@@ -177,7 +188,7 @@ export async function getMovieDetails(movieId: number) {
   const searchParams = new URLSearchParams({
     api_key: API_KEY,
     language: "en-US",
-    append_to_response: "videos,credits",
+    append_to_response: "videos,credits,recommendations,similar",
   });
 
   const response = await fetch(
@@ -196,6 +207,26 @@ export async function getMovieDetails(movieId: number) {
   }
 
   return response.json();
+}
+
+/* ----------------------------------------
+   SIMILAR MOVIES
+----------------------------------------- */
+
+export async function getSimilarMovies(
+  movieId: number
+): Promise<TMDBResponse> {
+  return fetchTMDB(`/movie/${movieId}/similar`);
+}
+
+/* ----------------------------------------
+   RECOMMENDATIONS
+----------------------------------------- */
+
+export async function getRecommendedMovies(
+  movieId: number
+): Promise<TMDBResponse> {
+  return fetchTMDB(`/movie/${movieId}/recommendations`);
 }
 
 /* ----------------------------------------
