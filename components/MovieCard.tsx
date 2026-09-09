@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Heart } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type Movie = {
   id: number;
@@ -21,144 +23,177 @@ type MovieCardProps = {
   movie: Movie;
 };
 
-function PosterFallback({ title }: { title: string }) {
+function PosterFallback() {
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-red-950/40">
+    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-900 via-zinc-800 to-black">
       <svg
         viewBox="0 0 120 160"
-        className="mb-3 h-20 w-16 text-red-500/70"
+        className="h-20 w-16 text-zinc-700"
         fill="none"
-        xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
         <rect
           x="18"
-          y="10"
+          y="12"
           width="84"
-          height="140"
+          height="136"
           rx="8"
           stroke="currentColor"
           strokeWidth="5"
         />
         <path
-          d="M32 30H88M32 130H88"
+          d="M38 12v136M82 12v136"
           stroke="currentColor"
           strokeWidth="4"
-          strokeLinecap="round"
         />
         <circle
           cx="60"
           cy="80"
-          r="25"
+          r="16"
           stroke="currentColor"
-          strokeWidth="4"
-        />
-        <path
-          d="M55 68L75 80L55 92V68Z"
-          fill="currentColor"
+          strokeWidth="5"
         />
       </svg>
-
-      <span className="max-w-[80%] text-center text-xs font-semibold text-zinc-500 line-clamp-2">
-        {title}
-      </span>
-
-      <span className="mt-1 text-[10px] uppercase tracking-widest text-red-500/60">
-        CinemaHunt
-      </span>
     </div>
   );
 }
 
 export default function MovieCard({ movie }: MovieCardProps) {
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
   const title = movie.title || movie.name || "Untitled";
-
-  const rating = movie.vote_average ?? movie.rating;
-
-  const hasRating =
-    rating !== null &&
-    rating !== undefined &&
-    Number(rating) > 0;
-
   const releaseDate = movie.release_date || movie.first_air_date;
-
   const year = releaseDate
     ? new Date(releaseDate).getFullYear()
     : null;
+
+  const rating =
+    typeof movie.vote_average === "number"
+      ? movie.vote_average
+      : typeof movie.rating === "number"
+        ? movie.rating
+        : null;
 
   const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w342${movie.poster_path}`
     : null;
 
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem("cinemahunt-wishlist") || "[]"
+      );
+
+      setIsWishlisted(
+        Array.isArray(saved) &&
+          saved.some((item: Movie) => item.id === movie.id)
+      );
+    } catch {
+      setIsWishlisted(false);
+    }
+  }, [movie.id]);
+
+  function toggleWishlist(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem("cinemahunt-wishlist") || "[]"
+      );
+
+      const wishlist: Movie[] = Array.isArray(saved) ? saved : [];
+
+      if (isWishlisted) {
+        const updated = wishlist.filter((item) => item.id !== movie.id);
+        localStorage.setItem(
+          "cinemahunt-wishlist",
+          JSON.stringify(updated)
+        );
+        setIsWishlisted(false);
+      } else {
+        const updated = [...wishlist, movie];
+        localStorage.setItem(
+          "cinemahunt-wishlist",
+          JSON.stringify(updated)
+        );
+        setIsWishlisted(true);
+      }
+
+      window.dispatchEvent(new Event("wishlistUpdated"));
+    } catch {
+      // Ignore localStorage errors.
+    }
+  }
+
   return (
     <Link
       href={`/movie/${movie.id}`}
-      className="group flex h-full min-w-0 flex-col overflow-hidden rounded-xl bg-zinc-900 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+      className="group flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-zinc-900/80 transition duration-300 hover:-translate-y-1 hover:border-red-500/40 hover:bg-zinc-900 hover:shadow-xl hover:shadow-red-950/20"
     >
       {/* Poster */}
-      <div className="relative aspect-[2/3] w-full shrink-0 overflow-hidden bg-zinc-950">
+      <div className="relative aspect-[2/3] w-full overflow-hidden bg-zinc-900">
         {posterUrl ? (
           <Image
             src={posterUrl}
-            alt={`${title} poster`}
+            alt={title}
             fill
             loading="lazy"
             quality={75}
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 640px) 45vw, (max-width: 768px) 30vw, (max-width: 1024px) 22vw, 16vw"
+            className="object-cover transition duration-500 group-hover:scale-105"
           />
         ) : (
-          <PosterFallback title={title} />
+          <PosterFallback />
         )}
 
         {/* Gradient */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80" />
 
         {/* Rating */}
-        <div className="absolute right-2 top-2">
-          {hasRating ? (
-            <span className="rounded-md bg-black/75 px-2 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-              ⭐ {Number(rating).toFixed(1)}
-            </span>
-          ) : (
-            <span className="rounded-md bg-black/75 px-2 py-1 text-xs font-semibold text-white/80 backdrop-blur-sm">
-              N/A
-            </span>
-          )}
-        </div>
-
-        {/* Media Type */}
-        {movie.media_type && (
-          <div className="absolute left-2 top-2">
-            <span className="rounded-md bg-red-600/90 px-2 py-1 text-[10px] font-bold uppercase text-white">
-              {movie.media_type === "tv" ? "TV" : "Movie"}
-            </span>
+        {rating !== null && (
+          <div className="absolute left-2 top-2 rounded-md bg-black/75 px-2 py-1 text-xs font-semibold text-yellow-400 backdrop-blur-sm">
+            ★ {rating.toFixed(1)}
           </div>
         )}
 
-        {/* Hover Button */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center p-3 transition-transform duration-300 group-hover:translate-y-0">
-          <span className="rounded-lg bg-white px-4 py-2 text-sm font-bold text-black shadow-lg">
-            View Details
-          </span>
-        </div>
+        {/* Wishlist */}
+        <button
+          type="button"
+          onClick={toggleWishlist}
+          aria-label={
+            isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+          }
+          className={`absolute right-2 top-2 rounded-full p-2 backdrop-blur-md transition ${
+            isWishlisted
+              ? "bg-red-500 text-white"
+              : "bg-black/60 text-white hover:bg-red-500"
+          }`}
+        >
+          <Heart
+            size={16}
+            fill={isWishlisted ? "currentColor" : "none"}
+          />
+        </button>
       </div>
 
-      {/* Movie Info */}
+      {/* Content */}
       <div className="flex min-h-[120px] flex-1 flex-col p-3">
+        {/* Title */}
         <h3
           title={title}
-          className="line-clamp-1 min-h-[20px] text-sm font-semibold leading-5 text-white transition-colors group-hover:text-red-400"
+          className="line-clamp-1 min-h-[20px] text-sm font-semibold text-white"
         >
           {title}
         </h3>
 
-        <p className="mt-1 min-h-[16px] text-xs text-zinc-400">
-          {year || "—"}
+        {/* Year */}
+        <p className="mt-1 min-h-[16px] text-xs text-gray-500">
+          {year || "Unknown year"}
         </p>
 
         {/* Description */}
-        <p className="mt-2 line-clamp-2 min-h-[32px] text-xs leading-4 text-zinc-400">
+        <p className="mt-2 min-h-[40px] line-clamp-2 text-sm leading-5 text-gray-400">
           {movie.overview || "No description available."}
         </p>
       </div>
