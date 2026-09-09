@@ -37,8 +37,9 @@ export default function MovieCard({ movie }: MovieCardProps) {
     ? new Date(releaseDate).getFullYear()
     : null;
 
+  // Smaller TMDB image for movie cards
   const posterUrl = movie.poster_path
-    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+    ? `https://image.tmdb.org/t/p/w342${movie.poster_path}`
     : "/logo.png";
 
   return (
@@ -53,11 +54,12 @@ export default function MovieCard({ movie }: MovieCardProps) {
           alt={`${title} poster`}
           fill
           loading="lazy"
-          quality={80}
+          quality={75}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
+        {/* Gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70" />
 
         {/* Rating */}
@@ -102,7 +104,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
           </p>
         )}
 
-        {/* Movie Description */}
+        {/* Description */}
         <p className="mt-2 line-clamp-2 min-h-[32px] text-xs leading-4 text-zinc-400">
           {movie.overview || "No description available."}
         </p>
