@@ -1,20 +1,34 @@
 "use client";
 
-import Link from "next/link";
-import Navbar from "@/components/Navbar";
 import { useEffect, useState } from "react";
-import { getPopularMovies, Movie } from "@/lib/tmdb";
+
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import MovieCard from "@/components/MovieCard";
+import MovieSkeletonGrid from "@/components/MovieSkeletonGrid";
+
+import { getPopularMovies, type Movie } from "@/lib/tmdb";
 
 export default function PopularPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function loadMovies() {
       try {
+        setLoading(true);
+        setError(false);
+
         const data = await getPopularMovies();
+
         setMovies(data.results || []);
       } catch (error) {
         console.error("Movies error:", error);
+        setMovies([]);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -22,70 +36,125 @@ export default function PopularPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-black text-white">
       <Navbar />
 
-      <div className="mx-auto max-w-7xl px-6 pb-20 pt-28">
-        <p className="mb-2 text-sm uppercase tracking-[0.3em] text-red-500">
-          CinemaHunt
-        </p>
+      {/* HEADER */}
+      <section className="relative overflow-hidden border-b border-white/10 bg-gradient-to-b from-zinc-950 via-black to-black">
+        <div className="absolute -right-32 -top-32 h-80 w-80 rounded-full bg-red-600/10 blur-3xl" />
 
-        <h1 className="mb-10 text-4xl font-bold">
-          Popular Movies 🔥
-        </h1>
+        <div className="absolute -left-32 top-40 h-72 w-72 rounded-full bg-red-600/5 blur-3xl" />
 
-        {movies.length === 0 ? (
-          <p className="text-gray-400">
-            Loading movies...
+        <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-28 sm:px-6">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em] text-red-500">
+            CinemaHunt
           </p>
-        ) : (
-          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            {movies.map((movie) => (
-              <Link
-                key={movie.id}
-                href={`/movie/${movie.id}`}
-                className="group overflow-hidden rounded-2xl bg-[#111] text-left transition duration-300 hover:-translate-y-2"
+
+          <h1 className="text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
+            Popular Movies
+            <span className="ml-2">🔥</span>
+          </h1>
+
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+            Discover the movies everyone is watching right now.
+          </p>
+        </div>
+      </section>
+
+      {/* CONTENT */}
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12">
+        {/* LOADING */}
+        {loading && (
+          <section>
+            <div className="mb-6 flex items-center justify-between">
+              <div className="h-7 w-40 animate-pulse rounded bg-zinc-800" />
+            </div>
+
+            <MovieSkeletonGrid count={18} />
+          </section>
+        )}
+
+        {/* ERROR */}
+        {!loading && error && (
+          <section className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-red-500/5 p-12 text-center">
+            <div className="absolute left-1/2 top-0 h-32 w-32 -translate-x-1/2 rounded-full bg-red-600/10 blur-3xl" />
+
+            <div className="relative">
+              <div className="mb-4 text-4xl">⚠️</div>
+
+              <h2 className="text-xl font-bold">
+                Something went wrong
+              </h2>
+
+              <p className="mt-2 text-sm text-zinc-500">
+                We couldn't load the popular movies right now.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="mt-6 rounded-xl bg-red-600 px-6 py-3 text-sm font-bold transition-all duration-300 hover:bg-red-700 hover:shadow-lg hover:shadow-red-600/20"
               >
-                <div className="relative overflow-hidden">
-                  {movie.poster_path ? (
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                      alt={movie.title}
-                      className="aspect-[2/3] w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex aspect-[2/3] items-center justify-center text-gray-500">
-                      No Image
-                    </div>
-                  )}
+                Try Again
+              </button>
+            </div>
+          </section>
+        )}
 
-                  <div className="absolute right-2 top-2 rounded-full bg-black/80 px-2 py-1 text-xs">
-                    ⭐ {movie.vote_average?.toFixed(1) || "N/A"}
-                  </div>
+        {/* EMPTY */}
+        {!loading && !error && movies.length === 0 && (
+          <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-12 text-center">
+            <div className="mb-5 text-5xl">🎬</div>
 
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition group-hover:opacity-100">
-                    <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-black">
-                      ▶
-                    </span>
-                  </div>
-                </div>
+            <h2 className="text-xl font-bold">
+              No popular movies found
+            </h2>
 
-                <div className="p-3">
-                  <h2 className="line-clamp-1 font-semibold">
-                    {movie.title}
-                  </h2>
+            <p className="mt-2 text-sm text-zinc-500">
+              Check back again soon.
+            </p>
+          </section>
+        )}
 
-                  {movie.release_date && (
-                    <p className="mt-1 text-xs text-gray-500">
-                      {movie.release_date.slice(0, 4)}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            ))}
-          </div>
+        {/* MOVIES */}
+        {!loading && !error && movies.length > 0 && (
+          <section>
+            <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-red-500">
+                  Trending with everyone
+                </p>
+
+                <h2 className="text-2xl font-black sm:text-3xl">
+                  Top Popular Picks
+                </h2>
+
+                <p className="mt-1 text-sm text-zinc-500">
+                  The most popular movies right now
+                </p>
+              </div>
+
+              <div className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs text-zinc-400">
+                <span className="font-bold text-white">
+                  {movies.length}
+                </span>{" "}
+                movies
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {movies.map((movie) => (
+                <MovieCard
+                  key={movie.id}
+                  movie={movie}
+                />
+              ))}
+            </div>
+          </section>
         )}
       </div>
+
+      <Footer />
     </main>
   );
 }
