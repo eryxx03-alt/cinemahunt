@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getMovieDetails } from "@/lib/tmdb";
 import TrailerButton from "@/components/TrailerButton";
+import BackButton from "@/components/BackButton";
 
 type MoviePageProps = {
   params: Promise<{ id: string }>;
@@ -96,6 +97,11 @@ export default async function MoviePage({
   return (
     <main className="min-h-screen bg-black text-white">
 
+      {/* BACK BUTTON */}
+      <div className="mx-auto max-w-7xl px-6 pt-24">
+        <BackButton />
+      </div>
+
       {/* HERO */}
       <section className="relative min-h-[70vh] overflow-hidden">
 
@@ -112,7 +118,7 @@ export default async function MoviePage({
         <div className="absolute inset-0 bg-black/70" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
 
-        <div className="relative z-10 mx-auto flex min-h-[70vh] max-w-7xl items-end gap-8 px-6 pb-12 pt-32">
+        <div className="relative z-10 mx-auto flex min-h-[70vh] max-w-7xl items-end gap-8 px-6 pb-12 pt-20">
 
           {/* POSTER */}
           {poster && (
