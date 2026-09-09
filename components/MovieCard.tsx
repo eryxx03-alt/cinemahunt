@@ -44,9 +44,10 @@ export default function MovieCard({ movie }: MovieCardProps) {
   return (
     <Link
       href={`/movie/${movie.id}`}
-      className="group block min-w-0 overflow-hidden rounded-xl bg-zinc-900 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+      className="group flex min-w-0 flex-col overflow-hidden rounded-xl bg-zinc-900 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
     >
-      <div className="relative aspect-[2/3] w-full overflow-hidden bg-zinc-800">
+      {/* Poster */}
+      <div className="relative aspect-[2/3] w-full shrink-0 overflow-hidden bg-zinc-800">
         <Image
           src={posterUrl}
           alt={`${title} poster`}
@@ -90,7 +91,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
       </div>
 
       {/* Movie Info */}
-      <div className="p-3">
+      <div className="flex min-h-[120px] flex-col p-3">
         <h3 className="truncate text-sm font-semibold text-white transition-colors group-hover:text-red-400">
           {title}
         </h3>
@@ -102,11 +103,9 @@ export default function MovieCard({ movie }: MovieCardProps) {
         )}
 
         {/* Movie Description */}
-        {movie.overview && (
-          <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-zinc-400">
-            {movie.overview}
-          </p>
-        )}
+        <p className="mt-2 line-clamp-2 min-h-[32px] text-xs leading-4 text-zinc-400">
+          {movie.overview || "No description available."}
+        </p>
       </div>
     </Link>
   );
