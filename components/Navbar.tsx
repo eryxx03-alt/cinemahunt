@@ -17,15 +17,24 @@ export default function Navbar() {
   ];
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
-    return pathname === href || pathname.startsWith(`${href}/`);
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return (
+      pathname === href ||
+      pathname.startsWith(`${href}/`)
+    );
   };
 
   const wishlistActive =
     pathname === "/watchlist" ||
     pathname.startsWith("/watchlist/");
 
-  // Close mobile menu when route changes
+  const searchActive =
+    pathname === "/search" ||
+    pathname.startsWith("/search/");
+
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
@@ -33,7 +42,7 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/70 shadow-2xl shadow-black/30 backdrop-blur-2xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-[72px] sm:px-6">
-        {/* LOGO */}
+        {/* Logo */}
         <Link
           href="/"
           className="group flex shrink-0 items-center gap-2.5"
@@ -46,8 +55,8 @@ export default function Navbar() {
               alt="CinemaHunt"
               width={40}
               height={40}
-              className="relative object-contain transition-transform duration-300 group-hover:scale-105 sm:h-[42px] sm:w-[42px]"
               priority
+              className="relative object-contain transition-transform duration-300 group-hover:scale-105 sm:h-[42px] sm:w-[42px]"
             />
           </div>
 
@@ -56,7 +65,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* DESKTOP NAV */}
+        {/* Desktop Navigation */}
         <div className="hidden items-center gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1 sm:flex">
           {navItems.map((item) => {
             const active = isActive(item.href);
@@ -105,16 +114,21 @@ export default function Navbar() {
 
           {/* Search */}
           <Link
-            href="/movies"
+            href="/search"
             aria-label="Search movies"
-            className="flex items-center justify-center rounded-lg p-2.5 text-zinc-400 transition-all duration-300 hover:bg-white/[0.06] hover:text-white"
+            className={`flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 ${
+              searchActive
+                ? "bg-red-600/15 text-red-400"
+                : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"
+            }`}
           >
             <Search size={18} />
           </Link>
         </div>
 
-        {/* MOBILE ACTIONS */}
+        {/* Mobile Actions */}
         <div className="flex items-center gap-2 sm:hidden">
+          {/* Mobile Wishlist */}
           <Link
             href="/watchlist"
             aria-label="Wishlist"
@@ -130,23 +144,43 @@ export default function Navbar() {
             />
           </Link>
 
+          {/* Mobile Search */}
+          <Link
+            href="/search"
+            aria-label="Search movies"
+            className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300 ${
+              searchActive
+                ? "border-red-500/30 bg-red-500/10 text-red-400"
+                : "border-white/10 bg-white/[0.04] text-zinc-400 hover:border-red-500/30 hover:text-white"
+            }`}
+          >
+            <Search size={19} />
+          </Link>
+
+          {/* Mobile Menu */}
           <button
             type="button"
             onClick={() => setMenuOpen((open) => !open)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-label={
+              menuOpen ? "Close menu" : "Open menu"
+            }
             aria-expanded={menuOpen}
             className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-zinc-300 transition-all duration-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-white"
           >
-            {menuOpen ? <X size={21} /> : <Menu size={21} />}
+            {menuOpen ? (
+              <X size={21} />
+            ) : (
+              <Menu size={21} />
+            )}
           </button>
         </div>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* Mobile Menu */}
       <div
         className={`overflow-hidden border-t border-white/10 bg-black/95 backdrop-blur-2xl transition-all duration-300 sm:hidden ${
           menuOpen
-            ? "max-h-[420px] opacity-100"
+            ? "max-h-[500px] opacity-100"
             : "max-h-0 border-transparent opacity-0"
         }`}
       >
@@ -174,6 +208,7 @@ export default function Navbar() {
               );
             })}
 
+            {/* Mobile Wishlist */}
             <Link
               href="/watchlist"
               className={`flex items-center justify-between rounded-xl border px-4 py-3.5 text-sm font-semibold transition-all duration-200 ${
@@ -185,7 +220,11 @@ export default function Navbar() {
               <span className="flex items-center gap-3">
                 <Heart
                   size={18}
-                  fill={wishlistActive ? "currentColor" : "none"}
+                  fill={
+                    wishlistActive
+                      ? "currentColor"
+                      : "none"
+                  }
                 />
                 Wishlist
               </span>
@@ -195,9 +234,14 @@ export default function Navbar() {
               )}
             </Link>
 
+            {/* Mobile Search */}
             <Link
-              href="/movies"
-              className="flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3.5 text-sm font-semibold text-zinc-400 transition-all duration-200 hover:border-white/10 hover:bg-white/[0.06] hover:text-white"
+              href="/search"
+              className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-sm font-semibold transition-all duration-200 ${
+                searchActive
+                  ? "border-red-500/20 bg-red-500/10 text-red-400"
+                  : "border-white/5 bg-white/[0.03] text-zinc-400 hover:border-white/10 hover:bg-white/[0.06] hover:text-white"
+              }`}
             >
               <Search size={18} />
               Search Movies
