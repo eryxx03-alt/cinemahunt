@@ -126,6 +126,49 @@ export async function getEnglishMovies(): Promise<TMDBResponse> {
   });
 }
 
+/* ----------------------------------------
+   SMART MOVIE DISCOVERY
+----------------------------------------- */
+
+export async function discoverMovies({
+  genre,
+  year,
+  language,
+  sortBy = "popularity.desc",
+}: {
+  genre?: string;
+  year?: string;
+  language?: string;
+  sortBy?: string;
+}): Promise<TMDBResponse> {
+  const params: Record<string, string> = {
+    sort_by: sortBy,
+  };
+
+  if (genre) {
+    params.with_genres = genre;
+  }
+
+  if (year) {
+    params.primary_release_year = year;
+  }
+
+  if (language) {
+    params.with_original_language = language;
+  }
+
+  // Helps Top Rated avoid movies with only a tiny number of votes.
+  if (sortBy === "vote_average.desc") {
+    params.vote_count_gte = "100";
+  }
+
+  return fetchTMDB("/discover/movie", params);
+}
+
+/* ----------------------------------------
+   MOVIE DETAILS
+----------------------------------------- */
+
 export async function getMovieDetails(movieId: number) {
   if (!API_KEY) {
     throw new Error("NEXT_PUBLIC_TMDB_API_KEY is not configured");
@@ -154,6 +197,10 @@ export async function getMovieDetails(movieId: number) {
 
   return response.json();
 }
+
+/* ----------------------------------------
+   GENRES
+----------------------------------------- */
 
 export async function getGenres(): Promise<GenreResponse> {
   if (!API_KEY) {
@@ -190,6 +237,10 @@ export async function getMoviesByGenre(
   });
 }
 
+/* ----------------------------------------
+   SEARCH
+----------------------------------------- */
+
 export async function searchMovies(
   query: string
 ): Promise<TMDBResponse> {
@@ -197,6 +248,10 @@ export async function searchMovies(
     query,
   });
 }
+
+/* ----------------------------------------
+   IMAGE URL
+----------------------------------------- */
 
 export function getImageUrl(
   path?: string | null,
