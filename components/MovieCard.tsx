@@ -21,6 +21,55 @@ type MovieCardProps = {
   movie: Movie;
 };
 
+function PosterFallback({ title }: { title: string }) {
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-red-950/40">
+      <svg
+        viewBox="0 0 120 160"
+        className="mb-3 h-20 w-16 text-red-500/70"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <rect
+          x="18"
+          y="10"
+          width="84"
+          height="140"
+          rx="8"
+          stroke="currentColor"
+          strokeWidth="5"
+        />
+        <path
+          d="M32 30H88M32 130H88"
+          stroke="currentColor"
+          strokeWidth="4"
+          strokeLinecap="round"
+        />
+        <circle
+          cx="60"
+          cy="80"
+          r="25"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <path
+          d="M55 68L75 80L55 92V68Z"
+          fill="currentColor"
+        />
+      </svg>
+
+      <span className="max-w-[80%] text-center text-xs font-semibold text-zinc-500 line-clamp-2">
+        {title}
+      </span>
+
+      <span className="mt-1 text-[10px] uppercase tracking-widest text-red-500/60">
+        CinemaHunt
+      </span>
+    </div>
+  );
+}
+
 export default function MovieCard({ movie }: MovieCardProps) {
   const title = movie.title || movie.name || "Untitled";
 
@@ -37,30 +86,33 @@ export default function MovieCard({ movie }: MovieCardProps) {
     ? new Date(releaseDate).getFullYear()
     : null;
 
-  // Smaller TMDB image for movie cards
   const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w342${movie.poster_path}`
-    : "/logo.png";
+    : null;
 
   return (
     <Link
       href={`/movie/${movie.id}`}
-      className="group flex min-w-0 flex-col overflow-hidden rounded-xl bg-zinc-900 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+      className="group flex h-full min-w-0 flex-col overflow-hidden rounded-xl bg-zinc-900 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
     >
       {/* Poster */}
-      <div className="relative aspect-[2/3] w-full shrink-0 overflow-hidden bg-zinc-800">
-        <Image
-          src={posterUrl}
-          alt={`${title} poster`}
-          fill
-          loading="lazy"
-          quality={75}
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+      <div className="relative aspect-[2/3] w-full shrink-0 overflow-hidden bg-zinc-950">
+        {posterUrl ? (
+          <Image
+            src={posterUrl}
+            alt={`${title} poster`}
+            fill
+            loading="lazy"
+            quality={75}
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <PosterFallback title={title} />
+        )}
 
         {/* Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70" />
 
         {/* Rating */}
         <div className="absolute right-2 top-2">
@@ -85,7 +137,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
         )}
 
         {/* Hover Button */}
-        <div className="absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center p-3 transition-transform duration-300 group-hover:translate-y-0">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center p-3 transition-transform duration-300 group-hover:translate-y-0">
           <span className="rounded-lg bg-white px-4 py-2 text-sm font-bold text-black shadow-lg">
             View Details
           </span>
@@ -93,16 +145,17 @@ export default function MovieCard({ movie }: MovieCardProps) {
       </div>
 
       {/* Movie Info */}
-      <div className="flex min-h-[120px] flex-col p-3">
-        <h3 className="truncate text-sm font-semibold text-white transition-colors group-hover:text-red-400">
+      <div className="flex min-h-[120px] flex-1 flex-col p-3">
+        <h3
+          title={title}
+          className="line-clamp-1 min-h-[20px] text-sm font-semibold leading-5 text-white transition-colors group-hover:text-red-400"
+        >
           {title}
         </h3>
 
-        {year && (
-          <p className="mt-1 text-xs text-zinc-400">
-            {year}
-          </p>
-        )}
+        <p className="mt-1 min-h-[16px] text-xs text-zinc-400">
+          {year || "—"}
+        </p>
 
         {/* Description */}
         <p className="mt-2 line-clamp-2 min-h-[32px] text-xs leading-4 text-zinc-400">
