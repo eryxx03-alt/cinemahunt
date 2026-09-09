@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
@@ -19,30 +19,37 @@ export default function Navbar() {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
+  const wishlistActive =
+    pathname === "/watchlist" || pathname.startsWith("/watchlist/");
+
   return (
-    <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/70 px-4 py-3 backdrop-blur-xl sm:px-6 sm:py-4">
+    <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/65 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-2xl sm:px-6 sm:py-4">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
         {/* Logo */}
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-90"
+          className="group flex shrink-0 items-center gap-2.5"
         >
-          <Image
-            src="/logo.png"
-            alt="CinemaHunt"
-            width={40}
-            height={40}
-            className="object-contain"
-            priority
-          />
+          <div className="relative">
+            <div className="absolute inset-0 rounded-xl bg-red-600/30 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
 
-          <span className="text-xl font-bold text-white sm:text-2xl">
+            <Image
+              src="/logo.png"
+              alt="CinemaHunt"
+              width={42}
+              height={42}
+              className="relative object-contain transition-transform duration-300 group-hover:scale-105"
+              priority
+            />
+          </div>
+
+          <span className="text-xl font-black tracking-tight text-white sm:text-2xl">
             Cinema<span className="text-red-500">Hunt</span>
           </span>
         </Link>
 
         {/* Navigation */}
-        <div className="flex items-center gap-1 overflow-x-auto whitespace-nowrap sm:gap-2">
+        <div className="flex items-center gap-1 overflow-x-auto whitespace-nowrap rounded-xl border border-white/10 bg-white/[0.03] p-1 sm:gap-1.5">
           {navItems.map((item) => {
             const active = isActive(item.href);
 
@@ -50,17 +57,16 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative shrink-0 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 sm:px-4 ${
+                className={`relative flex shrink-0 items-center rounded-lg px-3 py-2 text-sm font-semibold transition-all duration-300 sm:px-4 ${
                   active
-                    ? "bg-red-600/15 text-red-400"
-                    : "text-gray-300 hover:bg-white/10 hover:text-white"
+                    ? "bg-red-600/15 text-red-400 shadow-lg shadow-red-950/20"
+                    : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"
                 }`}
               >
                 {item.name}
 
-                {/* Active indicator */}
                 {active && (
-                  <span className="absolute bottom-0 left-1/2 h-0.5 w-6 -translate-x-1/2 rounded-full bg-red-500" />
+                  <span className="absolute bottom-0 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-red-500 shadow-lg shadow-red-500/50" />
                 )}
               </Link>
             );
@@ -69,28 +75,33 @@ export default function Navbar() {
           {/* Wishlist */}
           <Link
             href="/watchlist"
-            className={`relative flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition-all duration-200 sm:px-4 ${
-              pathname === "/watchlist" || pathname.startsWith("/watchlist/")
-                ? "bg-red-600/15 text-red-400"
-                : "text-gray-300 hover:bg-white/10 hover:text-red-400"
+            aria-label="Wishlist"
+            className={`relative flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition-all duration-300 sm:px-4 ${
+              wishlistActive
+                ? "bg-red-600/15 text-red-400 shadow-lg shadow-red-950/20"
+                : "text-zinc-400 hover:bg-white/[0.06] hover:text-red-400"
             }`}
           >
             <Heart
-              size={18}
-              fill={
-                pathname === "/watchlist" || pathname.startsWith("/watchlist/")
-                  ? "currentColor"
-                  : "none"
-              }
+              size={17}
+              className="transition-transform duration-300 group-hover:scale-110"
+              fill={wishlistActive ? "currentColor" : "none"}
             />
 
-            <span>Wishlist</span>
+            <span className="hidden sm:inline">Wishlist</span>
 
-            {/* Wishlist active indicator */}
-            {(pathname === "/watchlist" ||
-              pathname.startsWith("/watchlist/")) && (
-              <span className="absolute bottom-0 left-1/2 h-0.5 w-6 -translate-x-1/2 rounded-full bg-red-500" />
+            {wishlistActive && (
+              <span className="absolute bottom-0 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-red-500 shadow-lg shadow-red-500/50" />
             )}
+          </Link>
+
+          {/* Search */}
+          <Link
+            href="/movies"
+            aria-label="Search movies"
+            className="flex shrink-0 items-center justify-center rounded-lg p-2 text-zinc-400 transition-all duration-300 hover:bg-white/[0.06] hover:text-white"
+          >
+            <Search size={18} />
           </Link>
         </div>
       </div>
