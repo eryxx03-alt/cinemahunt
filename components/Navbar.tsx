@@ -6,9 +6,12 @@ import { Heart, Menu, Search, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import SearchBar from "@/components/SearchBar";
+
 export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -31,18 +34,16 @@ export default function Navbar() {
     pathname === "/watchlist" ||
     pathname.startsWith("/watchlist/");
 
-  const searchActive =
-    pathname === "/search" ||
-    pathname.startsWith("/search/");
-
   useEffect(() => {
     setMenuOpen(false);
+    setSearchOpen(false);
   }, [pathname]);
 
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/70 shadow-2xl shadow-black/30 backdrop-blur-2xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-[72px] sm:px-6">
-        {/* Logo */}
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:h-[72px] sm:px-6">
+
+        {/* LOGO */}
         <Link
           href="/"
           className="group flex shrink-0 items-center gap-2.5"
@@ -65,70 +66,88 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden items-center gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1 sm:flex">
-          {navItems.map((item) => {
-            const active = isActive(item.href);
+        {/* DESKTOP NAVIGATION */}
+        <div className="hidden items-center gap-2 sm:flex">
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative flex items-center rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-300 ${
-                  active
-                    ? "bg-red-600/15 text-red-400 shadow-lg shadow-red-950/20"
-                    : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"
-                }`}
-              >
-                {item.name}
+          <div className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1">
 
-                {active && (
-                  <span className="absolute bottom-0 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-red-500 shadow-lg shadow-red-500/50" />
-                )}
-              </Link>
-            );
-          })}
+            {navItems.map((item) => {
+              const active = isActive(item.href);
 
-          {/* Wishlist */}
-          <Link
-            href="/watchlist"
-            aria-label="Wishlist"
-            className={`relative flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-300 ${
-              wishlistActive
-                ? "bg-red-600/15 text-red-400 shadow-lg shadow-red-950/20"
-                : "text-zinc-400 hover:bg-white/[0.06] hover:text-red-400"
-            }`}
-          >
-            <Heart
-              size={17}
-              fill={wishlistActive ? "currentColor" : "none"}
-              className="transition-transform duration-300"
-            />
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative flex items-center rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-300 ${
+                    active
+                      ? "bg-red-600/15 text-red-400 shadow-lg shadow-red-950/20"
+                      : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"
+                  }`}
+                >
+                  {item.name}
 
-            <span>Wishlist</span>
+                  {active && (
+                    <span className="absolute bottom-0 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-red-500 shadow-lg shadow-red-500/50" />
+                  )}
+                </Link>
+              );
+            })}
 
-            {wishlistActive && (
-              <span className="absolute bottom-0 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-red-500 shadow-lg shadow-red-500/50" />
-            )}
-          </Link>
+            {/* WISHLIST */}
+            <Link
+              href="/watchlist"
+              aria-label="Wishlist"
+              className={`relative flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-300 ${
+                wishlistActive
+                  ? "bg-red-600/15 text-red-400 shadow-lg shadow-red-950/20"
+                  : "text-zinc-400 hover:bg-white/[0.06] hover:text-red-400"
+              }`}
+            >
+              <Heart
+                size={17}
+                fill={
+                  wishlistActive
+                    ? "currentColor"
+                    : "none"
+                }
+              />
 
-          {/* Search */}
-          <Link
-            href="/search"
-            aria-label="Search movies"
-            className={`flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 ${
-              searchActive
-                ? "bg-red-600/15 text-red-400"
-                : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"
-            }`}
-          >
-            <Search size={18} />
-          </Link>
+              <span>Wishlist</span>
+
+              {wishlistActive && (
+                <span className="absolute bottom-0 left-1/2 h-0.5 w-5 -translate-x-1/2 rounded-full bg-red-500 shadow-lg shadow-red-500/50" />
+              )}
+            </Link>
+
+            {/* SEARCH BUTTON */}
+            <button
+              type="button"
+              onClick={() =>
+                setSearchOpen((open) => !open)
+              }
+              aria-label="Search movies"
+              className="flex items-center justify-center rounded-lg p-2.5 text-zinc-400 transition-all duration-300 hover:bg-white/[0.06] hover:text-white"
+            >
+              {searchOpen ? (
+                <X size={18} />
+              ) : (
+                <Search size={18} />
+              )}
+            </button>
+          </div>
+
+          {/* DESKTOP SEARCH BAR */}
+          {searchOpen && (
+            <div className="ml-1 w-[300px]">
+              <SearchBar />
+            </div>
+          )}
         </div>
 
-        {/* Mobile Actions */}
+        {/* MOBILE ACTIONS */}
         <div className="flex items-center gap-2 sm:hidden">
-          {/* Mobile Wishlist */}
+
+          {/* MOBILE WISHLIST */}
           <Link
             href="/watchlist"
             aria-label="Wishlist"
@@ -140,29 +159,40 @@ export default function Navbar() {
           >
             <Heart
               size={19}
-              fill={wishlistActive ? "currentColor" : "none"}
+              fill={
+                wishlistActive
+                  ? "currentColor"
+                  : "none"
+              }
             />
           </Link>
 
-          {/* Mobile Search */}
-          <Link
-            href="/search"
-            aria-label="Search movies"
-            className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300 ${
-              searchActive
-                ? "border-red-500/30 bg-red-500/10 text-red-400"
-                : "border-white/10 bg-white/[0.04] text-zinc-400 hover:border-red-500/30 hover:text-white"
-            }`}
-          >
-            <Search size={19} />
-          </Link>
-
-          {/* Mobile Menu */}
+          {/* MOBILE SEARCH */}
           <button
             type="button"
-            onClick={() => setMenuOpen((open) => !open)}
+            onClick={() =>
+              setSearchOpen((open) => !open)
+            }
+            aria-label="Search movies"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-zinc-400 transition-all duration-300 hover:border-red-500/30 hover:text-white"
+          >
+            {searchOpen ? (
+              <X size={20} />
+            ) : (
+              <Search size={19} />
+            )}
+          </button>
+
+          {/* MOBILE MENU */}
+          <button
+            type="button"
+            onClick={() =>
+              setMenuOpen((open) => !open)
+            }
             aria-label={
-              menuOpen ? "Close menu" : "Open menu"
+              menuOpen
+                ? "Close menu"
+                : "Open menu"
             }
             aria-expanded={menuOpen}
             className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-zinc-300 transition-all duration-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-white"
@@ -176,7 +206,20 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* MOBILE SEARCH BAR */}
+      <div
+        className={`overflow-hidden border-t border-white/10 bg-black/95 backdrop-blur-2xl transition-all duration-300 sm:hidden ${
+          searchOpen
+            ? "max-h-28 opacity-100"
+            : "max-h-0 border-transparent opacity-0"
+        }`}
+      >
+        <div className="px-4 py-3">
+          <SearchBar />
+        </div>
+      </div>
+
+      {/* MOBILE MENU */}
       <div
         className={`overflow-hidden border-t border-white/10 bg-black/95 backdrop-blur-2xl transition-all duration-300 sm:hidden ${
           menuOpen
@@ -184,8 +227,9 @@ export default function Navbar() {
             : "max-h-0 border-transparent opacity-0"
         }`}
       >
-        <div className="mx-auto max-w-7xl px-4 py-4">
+        <div className="px-4 py-4">
           <div className="space-y-2">
+
             {navItems.map((item) => {
               const active = isActive(item.href);
 
@@ -208,7 +252,7 @@ export default function Navbar() {
               );
             })}
 
-            {/* Mobile Wishlist */}
+            {/* MOBILE WISHLIST */}
             <Link
               href="/watchlist"
               className={`flex items-center justify-between rounded-xl border px-4 py-3.5 text-sm font-semibold transition-all duration-200 ${
@@ -226,6 +270,7 @@ export default function Navbar() {
                       : "none"
                   }
                 />
+
                 Wishlist
               </span>
 
@@ -234,18 +279,6 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* Mobile Search */}
-            <Link
-              href="/search"
-              className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-sm font-semibold transition-all duration-200 ${
-                searchActive
-                  ? "border-red-500/20 bg-red-500/10 text-red-400"
-                  : "border-white/5 bg-white/[0.03] text-zinc-400 hover:border-white/10 hover:bg-white/[0.06] hover:text-white"
-              }`}
-            >
-              <Search size={18} />
-              Search Movies
-            </Link>
           </div>
         </div>
       </div>
