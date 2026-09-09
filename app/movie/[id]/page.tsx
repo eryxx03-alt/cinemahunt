@@ -11,6 +11,7 @@ import {
 import TrailerButton from "@/components/TrailerButton";
 import BackButton from "@/components/BackButton";
 import WatchlistButton from "@/components/WatchlistButton";
+import MovieCard from "@/components/MovieCard";
 
 type MoviePageProps = {
   params: Promise<{ id: string }>;
@@ -149,12 +150,14 @@ export default async function MoviePage({
           <div className="absolute inset-0 bg-zinc-900" />
         )}
 
+        {/* Cinematic overlays */}
         <div className="absolute inset-0 bg-black/70" />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
 
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent" />
 
+        {/* HERO CONTENT */}
         <div className="relative z-10 mx-auto flex min-h-[70vh] max-w-7xl items-end gap-8 px-6 pb-12 pt-20">
           {/* POSTER */}
           {poster && (
@@ -183,10 +186,12 @@ export default async function MoviePage({
               <WatchlistButton movie={movie} />
             </div>
 
+            {/* TITLE */}
             <h1 className="mb-4 text-4xl font-bold md:text-6xl">
               {title}
             </h1>
 
+            {/* META */}
             <div className="mb-5 flex flex-wrap items-center gap-4 text-sm text-gray-300">
               {movie.release_date && (
                 <span>
@@ -222,7 +227,7 @@ export default async function MoviePage({
             <div className="flex flex-wrap gap-3">
               <Link
                 href={`/movie/${id}/watch`}
-                className="rounded-lg bg-red-600 px-6 py-3 font-semibold transition hover:bg-red-700"
+                className="rounded-lg bg-red-600 px-6 py-3 font-semibold transition-all duration-200 hover:bg-red-700 hover:shadow-lg hover:shadow-red-600/20"
               >
                 ▶ Watch Now
               </Link>
@@ -248,10 +253,10 @@ export default async function MoviePage({
           {movie.overview || "No description available."}
         </p>
 
-        {/* INFO */}
+        {/* INFO CARDS */}
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {movie.release_date && (
-            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5 transition hover:border-red-500/20">
               <p className="text-sm text-gray-500">
                 Release Date
               </p>
@@ -263,7 +268,7 @@ export default async function MoviePage({
           )}
 
           {movie.vote_average > 0 && (
-            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5 transition hover:border-red-500/20">
               <p className="text-sm text-gray-500">
                 Rating
               </p>
@@ -275,7 +280,7 @@ export default async function MoviePage({
           )}
 
           {movie.runtime && (
-            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5 transition hover:border-red-500/20">
               <p className="text-sm text-gray-500">
                 Runtime
               </p>
@@ -287,7 +292,7 @@ export default async function MoviePage({
           )}
 
           {movie.status && (
-            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5 transition hover:border-red-500/20">
               <p className="text-sm text-gray-500">
                 Status
               </p>
@@ -327,61 +332,13 @@ export default async function MoviePage({
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {similarMovies.map((similar: any) => {
-              const similarTitle =
-                similar.title ||
-                similar.name ||
-                "Movie";
-
-              const similarPoster = similar.poster_path
-                ? getImageUrl(similar.poster_path, "w342")
-                : null;
-
-              if (!similarPoster) {
-                return null;
-              }
-
-              return (
-                <Link
-                  key={similar.id}
-                  href={`/movie/${similar.id}`}
-                  className="group overflow-hidden rounded-xl bg-zinc-900 transition duration-300 hover:-translate-y-1 hover:bg-zinc-800"
-                >
-                  <div className="relative aspect-[2/3] overflow-hidden bg-zinc-800">
-                    <Image
-                      src={similarPoster}
-                      alt={`${similarTitle} poster`}
-                      fill
-                      loading="lazy"
-                      quality={75}
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
-                      className="object-cover transition duration-500 group-hover:scale-105"
-                    />
-
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-
-                    {similar.vote_average > 0 && (
-                      <span className="absolute right-2 top-2 rounded-md bg-black/75 px-2 py-1 text-xs font-semibold backdrop-blur-sm">
-                        ⭐ {Number(similar.vote_average).toFixed(1)}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="p-3">
-                    <h3 className="line-clamp-2 min-h-[3rem] text-sm font-semibold leading-6 text-white transition-colors group-hover:text-red-400">
-                      {similarTitle}
-                    </h3>
-
-                    {similar.release_date && (
-                      <p className="mt-1 text-xs text-gray-500">
-                        {similar.release_date.slice(0, 4)}
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
+          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            {similarMovies.map((similar: any) => (
+              <MovieCard
+                key={similar.id}
+                movie={similar}
+              />
+            ))}
           </div>
         </section>
       )}
