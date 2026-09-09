@@ -55,7 +55,6 @@ function MovieRow({
 }) {
   return (
     <section className="mb-12 md:mb-14">
-      {/* Section Header */}
       <div className="mb-4 flex items-end justify-between gap-3 md:mb-5">
         <div className="min-w-0">
           <h2 className="text-xl font-bold text-white sm:text-2xl md:text-3xl">
@@ -100,9 +99,7 @@ function MovieRow({
                 href={`/movie/${movie.id}`}
                 className="group flex h-full min-w-0 flex-col overflow-hidden rounded-lg bg-zinc-900 transition duration-300 hover:-translate-y-1 hover:bg-zinc-800 sm:rounded-xl"
               >
-                {/* Poster */}
                 <div className="relative aspect-[2/3] w-full shrink-0 overflow-hidden bg-zinc-800">
-                  {/* Watchlist */}
                   <WatchlistButton movie={movie} />
 
                   <Image
@@ -110,14 +107,13 @@ function MovieRow({
                     alt={`${movieTitle} poster`}
                     fill
                     loading="lazy"
-                    quality={80}
+                    quality={75}
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
                     className="object-cover transition duration-500 group-hover:scale-105"
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-                  {/* Rating / TBA */}
                   <div className="absolute right-1.5 top-1.5 sm:right-2 sm:top-2">
                     {hasRating ? (
                       <span className="rounded-md bg-black/75 px-1.5 py-1 text-[10px] font-semibold text-white backdrop-blur-sm sm:px-2 sm:text-xs">
@@ -131,20 +127,16 @@ function MovieRow({
                   </div>
                 </div>
 
-                {/* Movie Information */}
                 <div className="flex min-h-[120px] flex-1 flex-col p-2 sm:min-h-[140px] sm:p-3">
-                  {/* Title */}
                   <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-5 text-white transition-colors group-hover:text-red-400 sm:min-h-[3rem] sm:text-base sm:leading-6">
                     {movieTitle}
                   </h3>
 
-                  {/* Description */}
                   <p className="mt-1 line-clamp-2 text-[11px] leading-4 text-zinc-400 sm:text-xs sm:leading-5">
                     {movie.overview ||
                       "No description available."}
                   </p>
 
-                  {/* Year */}
                   <div className="mt-auto pt-2">
                     <p className="text-[11px] text-zinc-500 sm:text-xs">
                       {year || "—"}
@@ -199,6 +191,32 @@ export default async function HomePage() {
       {hero ? (
         <section className="relative flex min-h-[70vh] items-end overflow-hidden sm:min-h-[75vh]">
 
+          {/* TOP RIGHT ACTIONS */}
+          <div className="absolute right-4 top-24 z-30 flex items-center gap-2 sm:right-6 sm:top-28 md:right-10">
+            <Link
+              href="/movies"
+              className="group flex items-center gap-2 rounded-xl border border-white/15 bg-black/40 px-4 py-2.5 text-sm font-semibold text-white shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-red-500/50 hover:bg-red-600/90"
+            >
+              <span className="text-base transition-transform duration-300 group-hover:scale-110">
+                🎬
+              </span>
+
+              <span>Movies</span>
+            </Link>
+
+            <Link
+              href="/watchlist"
+              className="group flex items-center gap-2 rounded-xl border border-white/15 bg-black/40 px-4 py-2.5 text-sm font-semibold text-white shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-red-500/50 hover:bg-red-600/90"
+            >
+              <span className="text-lg leading-none transition-transform duration-300 group-hover:scale-110">
+                ♡
+              </span>
+
+              <span>Wishlist</span>
+            </Link>
+          </div>
+
+          {/* HERO BACKGROUND */}
           <Image
             src={imageUrl(hero.backdrop_path, "original")}
             alt={hero.title || hero.name || "CinemaHunt"}
@@ -214,21 +232,19 @@ export default async function HomePage() {
 
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent" />
 
+          {/* HERO CONTENT */}
           <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-16 pt-24 sm:px-6 sm:pb-20 md:pb-28">
 
             <div className="max-w-3xl">
 
-              {/* Branding */}
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-red-500 sm:mb-4 sm:text-sm sm:tracking-[0.3em]">
                 CinemaHunt
               </p>
 
-              {/* Hero Title */}
               <h1 className="text-3xl font-black leading-tight sm:text-4xl md:text-6xl lg:text-7xl">
                 {hero.title || hero.name}
               </h1>
 
-              {/* Hero Meta */}
               <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-gray-300 sm:mt-4 sm:gap-4 sm:text-sm">
 
                 {(hero.release_date ||
@@ -244,8 +260,7 @@ export default async function HomePage() {
 
                 {heroHasRating ? (
                   <span className="text-yellow-400">
-                    ⭐{" "}
-                    {Number(hero.vote_average).toFixed(1)}
+                    ⭐ {Number(hero.vote_average).toFixed(1)}
                   </span>
                 ) : (
                   <span className="rounded-md bg-gray-800 px-2 py-1 text-xs text-gray-400">
@@ -255,13 +270,11 @@ export default async function HomePage() {
 
               </div>
 
-              {/* Hero Description */}
               <p className="mt-4 line-clamp-3 max-w-2xl text-sm leading-6 text-gray-300 sm:mt-6 sm:text-base sm:leading-7 md:text-lg">
                 {hero.overview ||
                   "Discover movies and TV shows on CinemaHunt."}
               </p>
 
-              {/* Hero Buttons */}
               <div className="mt-6 flex flex-wrap gap-3 sm:mt-8 sm:gap-4">
 
                 <Link
@@ -284,7 +297,7 @@ export default async function HomePage() {
           </div>
         </section>
       ) : (
-        /* Fallback Hero */
+        /* FALLBACK HERO */
         <section className="flex min-h-[60vh] items-center justify-center px-4">
           <div className="text-center">
 
