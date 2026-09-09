@@ -1,11 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import MovieCard from "@/components/MovieCard";
 import MovieSkeletonGrid from "@/components/MovieSkeletonGrid";
 
 import {
@@ -46,58 +45,6 @@ const years = Array.from(
   { length: 30 },
   (_, index) => currentYear - index
 );
-
-function MoviePosterFallback({ title }: { title: string }) {
-  return (
-    <div className="flex aspect-[2/3] w-full flex-col items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-red-950/40">
-      <svg
-        viewBox="0 0 120 160"
-        className="mb-3 h-20 w-16 text-red-500/70"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <rect
-          x="18"
-          y="10"
-          width="84"
-          height="140"
-          rx="8"
-          stroke="currentColor"
-          strokeWidth="5"
-        />
-
-        <path
-          d="M32 30H88M32 130H88"
-          stroke="currentColor"
-          strokeWidth="4"
-          strokeLinecap="round"
-        />
-
-        <circle
-          cx="60"
-          cy="80"
-          r="25"
-          stroke="currentColor"
-          strokeWidth="4"
-        />
-
-        <path
-          d="M55 68L75 80L55 92V68Z"
-          fill="currentColor"
-        />
-      </svg>
-
-      <span className="max-w-[80%] text-center text-xs font-semibold text-zinc-500 line-clamp-2">
-        {title}
-      </span>
-
-      <span className="mt-1 text-[10px] uppercase tracking-widest text-red-500/60">
-        CinemaHunt
-      </span>
-    </div>
-  );
-}
 
 export default function MoviesPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -173,306 +120,291 @@ export default function MoviesPage() {
     loadMovies(defaultFilters);
   }
 
+  const hasFilters =
+    genre !== "" ||
+    year !== "" ||
+    language !== "" ||
+    sortBy !== "popularity.desc";
+
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-black text-white">
       <Navbar />
 
-      <div className="mx-auto max-w-7xl px-6 pb-20 pt-28">
-        {/* Header */}
-        <div className="mb-10">
-          <p className="mb-2 text-sm uppercase tracking-[0.3em] text-red-500">
+      {/* PAGE HEADER */}
+      <section className="relative overflow-hidden border-b border-white/10 bg-gradient-to-b from-zinc-950 via-black to-black">
+        <div className="absolute -right-32 -top-32 h-80 w-80 rounded-full bg-red-600/10 blur-3xl" />
+        <div className="absolute -left-32 top-40 h-72 w-72 rounded-full bg-red-600/5 blur-3xl" />
+
+        <div className="relative mx-auto max-w-7xl px-4 pb-10 pt-28 sm:px-6 md:pb-12">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em] text-red-500">
             CinemaHunt
           </p>
 
-          <h1 className="text-4xl font-bold md:text-5xl">
-            Explore Movies 🎬
+          <h1 className="text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
+            Explore Movies
+            <span className="ml-2">🎬</span>
           </h1>
 
-          <p className="mt-3 max-w-2xl text-gray-400">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
             Discover movies by genre, release year, language,
             popularity, and ratings.
           </p>
         </div>
+      </section>
 
-        {/* Filters */}
-        <section className="mb-10 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-          <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">
-              Filter & Sort
-            </h2>
+      <div className="mx-auto max-w-7xl px-4 pb-20 sm:px-6">
+        {/* FILTER PANEL */}
+        <section className="relative -mt-2 mb-10 overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/90 p-5 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-6">
+          <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-red-600/5 blur-3xl" />
 
-            <button
-              type="button"
-              onClick={clearFilters}
-              className="text-sm text-gray-400 transition hover:text-white"
-            >
-              Clear All
-            </button>
+          <div className="relative">
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-bold">
+                  Filter & Sort
+                </h2>
+
+                <p className="mt-1 text-xs text-zinc-500">
+                  Customize your movie discovery
+                </p>
+              </div>
+
+              {hasFilters && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-zinc-400 transition-all duration-200 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
+                >
+                  Clear All
+                </button>
+              )}
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {/* GENRE */}
+              <div>
+                <label
+                  htmlFor="genre"
+                  className="mb-2 block text-xs font-semibold uppercase tracking-wider text-zinc-500"
+                >
+                  Genre
+                </label>
+
+                <select
+                  id="genre"
+                  value={genre}
+                  onChange={(event) =>
+                    setGenre(event.target.value)
+                  }
+                  className="w-full cursor-pointer rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition-all duration-200 hover:border-white/20 focus:border-red-500/50 focus:ring-2 focus:ring-red-500/10"
+                >
+                  <option value="">All Genres</option>
+
+                  {genres.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* YEAR */}
+              <div>
+                <label
+                  htmlFor="year"
+                  className="mb-2 block text-xs font-semibold uppercase tracking-wider text-zinc-500"
+                >
+                  Release Year
+                </label>
+
+                <select
+                  id="year"
+                  value={year}
+                  onChange={(event) =>
+                    setYear(event.target.value)
+                  }
+                  className="w-full cursor-pointer rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition-all duration-200 hover:border-white/20 focus:border-red-500/50 focus:ring-2 focus:ring-red-500/10"
+                >
+                  <option value="">All Years</option>
+
+                  {years.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* LANGUAGE */}
+              <div>
+                <label
+                  htmlFor="language"
+                  className="mb-2 block text-xs font-semibold uppercase tracking-wider text-zinc-500"
+                >
+                  Language
+                </label>
+
+                <select
+                  id="language"
+                  value={language}
+                  onChange={(event) =>
+                    setLanguage(event.target.value)
+                  }
+                  className="w-full cursor-pointer rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition-all duration-200 hover:border-white/20 focus:border-red-500/50 focus:ring-2 focus:ring-red-500/10"
+                >
+                  {languages.map((item) => (
+                    <option
+                      key={item.value}
+                      value={item.value}
+                    >
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* SORT */}
+              <div>
+                <label
+                  htmlFor="sort"
+                  className="mb-2 block text-xs font-semibold uppercase tracking-wider text-zinc-500"
+                >
+                  Sort By
+                </label>
+
+                <select
+                  id="sort"
+                  value={sortBy}
+                  onChange={(event) =>
+                    setSortBy(event.target.value)
+                  }
+                  className="w-full cursor-pointer rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition-all duration-200 hover:border-white/20 focus:border-red-500/50 focus:ring-2 focus:ring-red-500/10"
+                >
+                  {sortOptions.map((item) => (
+                    <option
+                      key={item.value}
+                      value={item.value}
+                    >
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => loadMovies()}
+                disabled={loading}
+                className="rounded-xl bg-red-600 px-6 py-3 text-sm font-bold shadow-lg shadow-red-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-red-600/20 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {loading ? "Loading..." : "Apply Filters"}
+              </button>
+
+              {hasFilters && !loading && (
+                <span className="text-xs text-zinc-500">
+                  Filters applied
+                </span>
+              )}
+            </div>
           </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Genre */}
-            <div>
-              <label
-                htmlFor="genre"
-                className="mb-2 block text-sm font-medium text-gray-300"
-              >
-                Genre
-              </label>
-
-              <select
-                id="genre"
-                value={genre}
-                onChange={(event) =>
-                  setGenre(event.target.value)
-                }
-                className="w-full rounded-xl border border-white/10 bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-red-500"
-              >
-                <option value="">All Genres</option>
-
-                {genres.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Year */}
-            <div>
-              <label
-                htmlFor="year"
-                className="mb-2 block text-sm font-medium text-gray-300"
-              >
-                Release Year
-              </label>
-
-              <select
-                id="year"
-                value={year}
-                onChange={(event) =>
-                  setYear(event.target.value)
-                }
-                className="w-full rounded-xl border border-white/10 bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-red-500"
-              >
-                <option value="">All Years</option>
-
-                {years.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Language */}
-            <div>
-              <label
-                htmlFor="language"
-                className="mb-2 block text-sm font-medium text-gray-300"
-              >
-                Language
-              </label>
-
-              <select
-                id="language"
-                value={language}
-                onChange={(event) =>
-                  setLanguage(event.target.value)
-                }
-                className="w-full rounded-xl border border-white/10 bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-red-500"
-              >
-                {languages.map((item) => (
-                  <option
-                    key={item.value}
-                    value={item.value}
-                  >
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Sort */}
-            <div>
-              <label
-                htmlFor="sort"
-                className="mb-2 block text-sm font-medium text-gray-300"
-              >
-                Sort By
-              </label>
-
-              <select
-                id="sort"
-                value={sortBy}
-                onChange={(event) =>
-                  setSortBy(event.target.value)
-                }
-                className="w-full rounded-xl border border-white/10 bg-[#111] px-4 py-3 text-sm text-white outline-none focus:border-red-500"
-              >
-                {sortOptions.map((item) => (
-                  <option
-                    key={item.value}
-                    value={item.value}
-                  >
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => loadMovies()}
-            disabled={loading}
-            className="mt-5 rounded-xl bg-red-600 px-6 py-3 text-sm font-semibold transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loading ? "Loading..." : "Apply Filters"}
-          </button>
         </section>
 
-        {/* Skeleton Loading */}
+        {/* LOADING */}
         {loading && (
-          <div>
-            <div className="mb-5 h-7 w-32 animate-pulse rounded bg-zinc-800" />
+          <section>
+            <div className="mb-5 flex items-center justify-between">
+              <div className="h-7 w-36 animate-pulse rounded bg-zinc-800" />
+            </div>
 
             <MovieSkeletonGrid count={18} />
-          </div>
+          </section>
         )}
 
-        {/* Error */}
+        {/* ERROR */}
         {!loading && error && (
-          <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-10 text-center">
-            <p className="text-gray-400">
-              Unable to load movies right now.
+          <section className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-red-500/5 p-10 text-center">
+            <div className="absolute left-1/2 top-0 h-32 w-32 -translate-x-1/2 rounded-full bg-red-600/10 blur-3xl" />
+
+            <div className="relative">
+              <div className="mb-4 text-4xl">⚠️</div>
+
+              <h2 className="text-lg font-bold">
+                Something went wrong
+              </h2>
+
+              <p className="mt-2 text-sm text-zinc-500">
+                Unable to load movies right now.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => loadMovies()}
+                className="mt-5 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-bold transition hover:bg-red-700"
+              >
+                Try Again
+              </button>
+            </div>
+          </section>
+        )}
+
+        {/* EMPTY */}
+        {!loading && !error && movies.length === 0 && (
+          <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-12 text-center">
+            <div className="mb-5 text-5xl">🎬</div>
+
+            <h2 className="text-xl font-bold">
+              No movies found
+            </h2>
+
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-500">
+              No movies match your current filters. Try changing
+              the genre, year, language, or sorting option.
             </p>
 
             <button
               type="button"
-              onClick={() => loadMovies()}
-              className="mt-4 rounded-lg bg-red-600 px-5 py-2 text-sm font-semibold hover:bg-red-700"
+              onClick={clearFilters}
+              className="mt-6 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-bold transition hover:bg-red-700"
             >
-              Try Again
+              Reset Filters
             </button>
-          </div>
+          </section>
         )}
 
-        {/* Empty */}
-        {!loading &&
-          !error &&
-          movies.length === 0 && (
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-10 text-center">
-              <p className="text-gray-400">
-                No movies found with these filters.
-              </p>
-            </div>
-          )}
+        {/* RESULTS */}
+        {!loading && !error && movies.length > 0 && (
+          <section>
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-red-500">
+                  Discover
+                </p>
 
-        {/* Results */}
-        {!loading &&
-          !error &&
-          movies.length > 0 && (
-            <>
-              <div className="mb-5 flex items-center justify-between">
-                <h2 className="text-xl font-semibold">
+                <h2 className="text-2xl font-black sm:text-3xl">
                   Movies
                 </h2>
-
-                <p className="text-sm text-gray-500">
-                  {movies.length} results
-                </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                {movies.map((movie) => {
-                  const title =
-                    movie.title ||
-                    movie.name ||
-                    "Untitled";
-
-                  const releaseDate =
-                    movie.release_date ||
-                    movie.first_air_date;
-
-                  const posterUrl = movie.poster_path
-                    ? `https://image.tmdb.org/t/p/w342${movie.poster_path}`
-                    : null;
-
-                  const hasRating =
-                    movie.vote_average !== null &&
-                    movie.vote_average !== undefined &&
-                    Number(movie.vote_average) > 0;
-
-                  return (
-                    <Link
-                      key={movie.id}
-                      href={`/movie/${movie.id}`}
-                      className="group flex h-full min-w-0 flex-col overflow-hidden rounded-2xl bg-[#111] transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
-                    >
-                      {/* Poster */}
-                      <div className="relative aspect-[2/3] w-full shrink-0 overflow-hidden bg-zinc-950">
-                        {posterUrl ? (
-                          <Image
-                            src={posterUrl}
-                            alt={`${title} poster`}
-                            width={342}
-                            height={513}
-                            loading="lazy"
-                            quality={75}
-                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
-                            className="aspect-[2/3] w-full object-cover transition duration-500 group-hover:scale-105"
-                          />
-                        ) : (
-                          <MoviePosterFallback title={title} />
-                        )}
-
-                        {/* Gradient */}
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
-                        {/* Rating */}
-                        <div className="absolute right-2 top-2">
-                          <span className="rounded-full bg-black/80 px-2 py-1 text-xs font-semibold backdrop-blur-sm">
-                            {hasRating
-                              ? `⭐ ${Number(movie.vote_average).toFixed(1)}`
-                              : "N/A"}
-                          </span>
-                        </div>
-
-                        {/* Hover Play */}
-                        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition duration-300 group-hover:opacity-100">
-                          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-black shadow-lg">
-                            ▶
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Movie Info */}
-                      <div className="flex min-h-[120px] flex-1 flex-col p-3">
-                        <h2
-                          title={title}
-                          className="line-clamp-1 min-h-[20px] font-semibold leading-5 text-white transition-colors group-hover:text-red-400"
-                        >
-                          {title}
-                        </h2>
-
-                        <p className="mt-1 min-h-[16px] text-xs text-gray-500">
-                          {releaseDate
-                            ? releaseDate.slice(0, 4)
-                            : "—"}
-                        </p>
-
-                        <p className="mt-2 line-clamp-2 min-h-[32px] text-xs leading-4 text-gray-500">
-                          {movie.overview ||
-                            "No description available."}
-                        </p>
-                      </div>
-                    </Link>
-                  );
-                })}
+              <div className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs text-zinc-400">
+                <span className="font-bold text-white">
+                  {movies.length}
+                </span>{" "}
+                results
               </div>
-            </>
-          )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {movies.map((movie) => (
+                <MovieCard
+                  key={movie.id}
+                  movie={movie}
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       <Footer />
