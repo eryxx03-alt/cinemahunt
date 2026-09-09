@@ -2,17 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Heart } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
-  return (
-    <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/70 px-6 py-4 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between">
+  const pathname = usePathname();
 
-        {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-2"
-        >
+  const navItems = [
+    { name: "Home", href: "/" },
+    { name: "Movies", href: "/movies" },
+    { name: "Popular", href: "/popular" },
+  ];
+
+  return (
+    <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/70 px-4 py-3 backdrop-blur-md sm:px-6 sm:py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+
+        <Link href="/" className="flex shrink-0 items-center gap-2">
           <Image
             src="/logo.png"
             alt="CinemaHunt"
@@ -22,35 +28,54 @@ export default function Navbar() {
             priority
           />
 
-          <span className="text-2xl font-bold text-white">
+          <span className="text-xl font-bold text-white sm:text-2xl">
             Cinema<span className="text-red-500">Hunt</span>
           </span>
         </Link>
 
-        {/* Navigation */}
-        <div className="flex items-center gap-6 text-sm text-gray-300">
-          <Link
-            href="/"
-            className="transition hover:text-white"
-          >
-            Home
-          </Link>
+        <div className="flex items-center gap-1 overflow-x-auto whitespace-nowrap sm:gap-2">
+
+          {navItems.map((item) => {
+            const isActive =
+              item.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(item.href);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`shrink-0 rounded-lg px-3 py-2 text-sm font-medium transition sm:px-4 ${
+                  isActive
+                    ? "bg-red-600 text-white"
+                    : "text-gray-300 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                {item.name}
+              </Link>
+            );
+          })}
 
           <Link
-            href="/movies"
-            className="transition hover:text-white"
+            href="/watchlist"
+            className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition sm:px-4 ${
+              pathname.startsWith("/watchlist")
+                ? "bg-red-600 text-white"
+                : "text-red-400 hover:bg-white/10"
+            }`}
           >
-            Movies
+            <Heart
+              size={18}
+              fill={
+                pathname.startsWith("/watchlist")
+                  ? "currentColor"
+                  : "none"
+              }
+            />
+            <span>Wishlist</span>
           </Link>
 
-          <Link
-            href="/popular"
-            className="transition hover:text-white"
-          >
-            Popular
-          </Link>
         </div>
-
       </div>
     </nav>
   );

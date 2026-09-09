@@ -46,10 +46,13 @@ export default function MovieCard({ movie }: MovieCardProps) {
       className="group block min-w-0 overflow-hidden rounded-xl bg-zinc-900 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
     >
       <div className="relative aspect-[2/3] w-full overflow-hidden bg-zinc-800">
+
         <Image
           src={posterUrl}
-          alt={title}
+          alt={`${title} poster`}
           fill
+          loading="lazy"
+          quality={80}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
