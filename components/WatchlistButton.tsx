@@ -2,57 +2,86 @@
 
 import { useEffect, useState } from "react";
 
-type Movie = {
-  id: number;
-  title?: string;
-  name?: string;
-  poster_path?: string | null;
+type WishlistButtonProps = {
+  movie: {
+    id: number;
+    title?: string;
+    name?: string;
+    poster_path?: string | null;
+    backdrop_path?: string | null;
+    vote_average?: number;
+    release_date?: string;
+    first_air_date?: string;
+  };
 };
 
-export default function WatchlistButton({ movie }: { movie: Movie }) {
+const STORAGE_KEY = "cinemahunt-wishlist";
+
+export default function WishlistButton({
+  movie,
+}: WishlistButtonProps) {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("cinemahunt-watchlist");
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const wishlist = stored ? JSON.parse(stored) : [];
 
-    if (stored) {
-      const movies: Movie[] = JSON.parse(stored);
-      setSaved(movies.some((item) => item.id === movie.id));
+      setSaved(
+        Array.isArray(wishlist) &&
+          wishlist.some((item) => item.id === movie.id)
+      );
+    } catch {
+      setSaved(false);
     }
   }, [movie.id]);
 
-  function toggleWatchlist(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
+  function toggleWishlist() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const wishlist = stored ? JSON.parse(stored) : [];
 
-    const stored = localStorage.getItem("cinemahunt-watchlist");
-    const movies: Movie[] = stored ? JSON.parse(stored) : [];
+      if (!Array.isArray(wishlist)) return;
 
-    if (saved) {
-      const updated = movies.filter((item) => item.id !== movie.id);
-      localStorage.setItem(
-        "cinemahunt-watchlist",
-        JSON.stringify(updated)
-      );
-      setSaved(false);
-    } else {
-      const updated = [...movies, movie];
-      localStorage.setItem(
-        "cinemahunt-watchlist",
-        JSON.stringify(updated)
-      );
-      setSaved(true);
+      if (wishlist.some((item) => item.id === movie.id)) {
+        const updated = wishlist.filter(
+          (item) => item.id !== movie.id
+        );
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(updated)
+        );
+
+        setSaved(false);
+      } else {
+        const updated = [...wishlist, movie];
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(updated)
+        );
+
+        setSaved(true);
+      }
+
+      window.dispatchEvent(new Event("wishlist-updated"));
+    } catch {
+      console.error("Failed to update wishlist");
     }
   }
 
   return (
     <button
       type="button"
-      onClick={toggleWatchlist}
-      aria-label={saved ? "Remove from watchlist" : "Add to watchlist"}
-      className="absolute left-2 top-2 z-10 rounded-full bg-black/75 p-2 text-lg backdrop-blur-sm transition hover:scale-110"
+      onClick={toggleWishlist}
+      className={`rounded-xl border px-6 py-3.5 text-sm font-bold backdrop-blur-md transition-all duration-300 ${
+        saved
+          ? "border-red-500/40 bg-red-500/15 text-red-400"
+          : "border-white/10 bg-white/[0.06] text-white hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
+      }`}
     >
-      {saved ? "❤️" : "🤍"}
+      {saved ? "♥ In Wishlist" : "♡ Add to Wishlist"}
     </button>
   );
 }
