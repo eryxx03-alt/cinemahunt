@@ -1,12 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import WatchlistButton from "@/components/WatchlistButton";
+import HomeFilters from "@/components/HomeFilters";
+
 import {
   getTrendingMovies,
   getPopularMovies,
   getTopRatedMovies,
   getNowPlayingMovies,
   getUpcomingMovies,
+  discoverMovies,
 } from "@/lib/tmdb";
 
 type Movie = {
@@ -19,6 +22,14 @@ type Movie = {
   vote_average?: number | null;
   release_date?: string;
   first_air_date?: string;
+  original_language?: string;
+};
+
+type SearchParams = {
+  genre?: string;
+  year?: string;
+  language?: string;
+  sortBy?: string;
 };
 
 function safeMovies(data: any): Movie[] {
@@ -94,12 +105,17 @@ function MovieRow({
               : null;
 
             return (
-              <Link
+              <div
                 key={`${title}-${movie.id}`}
-                href={`/movie/${movie.id}`}
                 className="group flex h-full min-w-0 flex-col overflow-hidden rounded-lg bg-zinc-900 transition duration-300 hover:-translate-y-1 hover:bg-zinc-800 sm:rounded-xl"
               >
                 <div className="relative aspect-[2/3] w-full shrink-0 overflow-hidden bg-zinc-800">
+                  <Link
+                    href={`/movie/${movie.id}`}
+                    className="absolute inset-0 z-10"
+                    aria-label={`View ${movieTitle}`}
+                  />
+
                   <WatchlistButton movie={movie} />
 
                   <Image
@@ -112,9 +128,9 @@ function MovieRow({
                     className="object-cover transition duration-500 group-hover:scale-105"
                   />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-                  <div className="absolute right-1.5 top-1.5 sm:right-2 sm:top-2">
+                  <div className="pointer-events-none absolute right-1.5 top-1.5 z-20 sm:right-2 sm:top-2">
                     {hasRating ? (
                       <span className="rounded-md bg-black/75 px-1.5 py-1 text-[10px] font-semibold text-white backdrop-blur-sm sm:px-2 sm:text-xs">
                         ⭐ {Number(movie.vote_average).toFixed(1)}
@@ -127,7 +143,10 @@ function MovieRow({
                   </div>
                 </div>
 
-                <div className="flex min-h-[120px] flex-1 flex-col p-2 sm:min-h-[140px] sm:p-3">
+                <Link
+                  href={`/movie/${movie.id}`}
+                  className="flex min-h-[120px] flex-1 flex-col p-2 sm:min-h-[140px] sm:p-3"
+                >
                   <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-5 text-white transition-colors group-hover:text-red-400 sm:min-h-[3rem] sm:text-base sm:leading-6">
                     {movieTitle}
                   </h3>
@@ -142,8 +161,8 @@ function MovieRow({
                       {year || "—"}
                     </p>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              </div>
             );
           })}
         </div>
@@ -156,7 +175,107 @@ function MovieRow({
   );
 }
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const filters = await searchParams;
+
+  const hasFilters =
+    Boolean(filters.genre) ||
+    Boolean(filters.year) ||
+    Boolean(filters.language) ||
+    Boolean(filters.sortBy);
+
+  /*
+   * FILTERED HOMEPAGE
+   */
+  if (hasFilters) {
+    const filteredData = await discoverMovies({
+      genre: filters.genre,
+      year: filters.year,
+      language: filters.language,
+      sortBy:
+        filters.sortBy || "popularity.desc",
+    });
+
+    const filteredMovies = safeMovies(filteredData);
+
+    return (
+      <main className="min-h-screen overflow-x-hidden bg-black text-white">
+
+        {/* FILTER HEADER */}
+        <section className="relative border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black px-4 pb-10 pt-28 sm:px-6">
+          <div className="mx-auto max-w-7xl">
+
+            <div className="mb-8">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-red-500">
+                CinemaHunt
+              </p>
+
+              <h1 className="text-3xl font-black sm:text-4xl md:text-5xl">
+                Discover Movies
+              </h1>
+
+              <p className="mt-2 text-sm text-zinc-400 sm:text-base">
+                Find movies using your favorite filters.
+              </p>
+            </div>
+
+            <HomeFilters />
+
+          </div>
+        </section>
+
+        {/* FILTERED RESULTS */}
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold sm:text-3xl">
+                Filtered Results
+              </h2>
+
+              <p className="mt-1 text-sm text-zinc-500">
+                {filteredMovies.length} movies found
+              </p>
+            </div>
+
+            <Link
+              href="/"
+              className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold transition hover:bg-white/10"
+            >
+              Reset
+            </Link>
+          </div>
+
+          {filteredMovies.length > 0 ? (
+            <MovieRow
+              title="🎬 Movies For You"
+              description="Based on your selected filters"
+              movies={filteredMovies}
+            />
+          ) : (
+            <div className="rounded-xl border border-white/10 bg-white/5 px-6 py-16 text-center">
+              <p className="text-lg font-semibold">
+                No movies found
+              </p>
+
+              <p className="mt-2 text-sm text-zinc-500">
+                Try changing your filters.
+              </p>
+            </div>
+          )}
+
+        </section>
+      </main>
+    );
+  }
+
+  /*
+   * NORMAL HOMEPAGE
+   */
   const [
     trendingData,
     popularData,
@@ -193,6 +312,7 @@ export default async function HomePage() {
 
           {/* TOP RIGHT ACTIONS */}
           <div className="absolute right-4 top-24 z-30 flex items-center gap-2 sm:right-6 sm:top-28 md:right-10">
+
             <Link
               href="/movies"
               className="group flex items-center gap-2 rounded-xl border border-white/15 bg-black/40 px-4 py-2.5 text-sm font-semibold text-white shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-red-500/50 hover:bg-red-600/90"
@@ -214,6 +334,7 @@ export default async function HomePage() {
 
               <span>Wishlist</span>
             </Link>
+
           </div>
 
           {/* HERO BACKGROUND */}
@@ -297,7 +418,6 @@ export default async function HomePage() {
           </div>
         </section>
       ) : (
-        /* FALLBACK HERO */
         <section className="flex min-h-[60vh] items-center justify-center px-4">
           <div className="text-center">
 
@@ -319,6 +439,11 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* HOMEPAGE FILTERS */}
+      <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6">
+        <HomeFilters />
+      </section>
 
       {/* MOVIE SECTIONS */}
       <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
