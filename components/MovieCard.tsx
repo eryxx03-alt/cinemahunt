@@ -1,3 +1,4 @@
+```tsx
 "use client";
 
 import Image from "next/image";
@@ -7,6 +8,7 @@ type Movie = {
   id: number;
   title?: string;
   name?: string;
+  overview?: string | null;
   poster_path?: string | null;
   backdrop_path?: string | null;
   vote_average?: number | null;
@@ -46,7 +48,6 @@ export default function MovieCard({ movie }: MovieCardProps) {
       className="group block min-w-0 overflow-hidden rounded-xl bg-zinc-900 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
     >
       <div className="relative aspect-[2/3] w-full overflow-hidden bg-zinc-800">
-
         <Image
           src={posterUrl}
           alt={`${title} poster`}
@@ -100,7 +101,15 @@ export default function MovieCard({ movie }: MovieCardProps) {
             {year}
           </p>
         )}
+
+        {/* Movie Description */}
+        {movie.overview && (
+          <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-zinc-400">
+            {movie.overview}
+          </p>
+        )}
       </div>
     </Link>
   );
 }
+```
