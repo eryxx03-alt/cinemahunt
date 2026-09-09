@@ -2,17 +2,19 @@
 
 import { useEffect, useState } from "react";
 
+type Movie = {
+  id: number;
+  title?: string;
+  name?: string;
+  poster_path?: string | null;
+  backdrop_path?: string | null;
+  vote_average?: number;
+  release_date?: string;
+  first_air_date?: string;
+};
+
 type WishlistButtonProps = {
-  movie: {
-    id: number;
-    title?: string;
-    name?: string;
-    poster_path?: string | null;
-    backdrop_path?: string | null;
-    vote_average?: number;
-    release_date?: string;
-    first_air_date?: string;
-  };
+  movie?: Movie;
 };
 
 const STORAGE_KEY = "cinemahunt-wishlist";
@@ -23,29 +25,47 @@ export default function WishlistButton({
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
+    if (!movie) {
+      return;
+    }
+
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       const wishlist = stored ? JSON.parse(stored) : [];
 
-      setSaved(
-        Array.isArray(wishlist) &&
-          wishlist.some((item) => item.id === movie.id)
-      );
-    } catch {
+      if (Array.isArray(wishlist)) {
+        setSaved(
+          wishlist.some(
+            (item: Movie) => item?.id === movie.id
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Could not load wishlist:", error);
       setSaved(false);
     }
-  }, [movie.id]);
+  }, [movie]);
 
   function toggleWishlist() {
+    if (!movie) {
+      return;
+    }
+
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       const wishlist = stored ? JSON.parse(stored) : [];
 
-      if (!Array.isArray(wishlist)) return;
+      if (!Array.isArray(wishlist)) {
+        return;
+      }
 
-      if (wishlist.some((item) => item.id === movie.id)) {
+      const alreadySaved = wishlist.some(
+        (item: Movie) => item?.id === movie.id
+      );
+
+      if (alreadySaved) {
         const updated = wishlist.filter(
-          (item) => item.id !== movie.id
+          (item: Movie) => item?.id !== movie.id
         );
 
         localStorage.setItem(
@@ -65,10 +85,19 @@ export default function WishlistButton({
         setSaved(true);
       }
 
-      window.dispatchEvent(new Event("wishlist-updated"));
-    } catch {
-      console.error("Failed to update wishlist");
+      window.dispatchEvent(
+        new Event("wishlist-updated")
+      );
+    } catch (error) {
+      console.error(
+        "Could not update wishlist:",
+        error
+      );
     }
+  }
+
+  if (!movie) {
+    return null;
   }
 
   return (
