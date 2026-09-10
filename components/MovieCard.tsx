@@ -1,4 +1,3 @@
-```tsx
 "use client";
 
 import Image from "next/image";
@@ -233,4 +232,3 @@ export default function MovieCard({ movie }: MovieCardProps) {
     </Link>
   );
 }
-```
