@@ -57,7 +57,7 @@ export default function TrailerModal({
 
         <div className="aspect-video w-full">
           <iframe
-            src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&rel=0`}
+           src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&rel=0&enablejsapi=1&playsinline=1`}
             title={`${title} trailer`}
             className="h-full w-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
