@@ -51,6 +51,25 @@ export const metadata: Metadata = {
   // },
 };
 
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "CinemaHunt",
+  alternateName: "Cinema Hunt",
+  url: "https://cinemahunt10.vercel.app",
+  description:
+    "Explore trending, top-rated and upcoming movies. Find ratings, trailers and movie details on CinemaHunt.",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate:
+        "https://cinemahunt10.vercel.app/search?q={search_term_string}",
+    },
+    "query-input": "required name=search_term_string",
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -65,6 +84,14 @@ export default function RootLayout({
         <meta
           name="google-adsense-account"
           content="ca-pub-9961296446712353"
+        />
+
+        {/* CinemaHunt WebSite Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
+          }}
         />
       </head>
 
