@@ -59,11 +59,14 @@ export default function HeroSection({ movie }: HeroSectionProps) {
   return (
     <>
       <section className="relative min-h-[78vh] overflow-hidden bg-[#050505]">
-        {/* Backdrop */}
+        {/* Optimized Backdrop */}
         {movie.backdrop_path && (
           <img
-            src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+            src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
             alt={movie.title}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
         )}
@@ -78,7 +81,6 @@ export default function HeroSection({ movie }: HeroSectionProps) {
         {/* Content */}
         <div className="relative z-10 flex min-h-[78vh] items-end">
           <div className="w-full max-w-3xl px-5 pb-16 pt-32 sm:px-8 md:pb-24 lg:px-12">
-            
             {/* Featured label */}
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 backdrop-blur-md">
               <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
@@ -116,7 +118,7 @@ export default function HeroSection({ movie }: HeroSectionProps) {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href={`/movie/${movie.id}`}
-                className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-red-950/30 transition-all duration-200 hover:bg-red-500 hover:scale-[1.02]"
+                className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-red-950/30 transition-all duration-200 hover:scale-[1.02] hover:bg-red-500"
               >
                 <Info size={18} />
                 View Details
@@ -148,7 +150,6 @@ export default function HeroSection({ movie }: HeroSectionProps) {
             className="relative w-full max-w-5xl"
             onClick={(event) => event.stopPropagation()}
           >
-            {/* Close button */}
             <button
               type="button"
               onClick={() => {
@@ -161,7 +162,6 @@ export default function HeroSection({ movie }: HeroSectionProps) {
               <X size={20} />
             </button>
 
-            {/* Video */}
             <div className="aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl">
               {loadingTrailer ? (
                 <div className="flex h-full items-center justify-center text-sm text-gray-400">
