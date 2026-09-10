@@ -43,7 +43,7 @@ export default function SearchBar() {
       } finally {
         setLoading(false);
       }
-    }, 450);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [query]);
