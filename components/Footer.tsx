@@ -101,8 +101,16 @@ export default function Footer() {
             </h3>
 
             <p className="text-sm leading-6 text-gray-400">
-              This product uses the TMDB API but is not
-              endorsed or certified by TMDB.
+              This product uses the{" "}
+              <a
+                href="https://www.themoviedb.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-white transition hover:text-red-400"
+              >
+                TMDB API
+              </a>{" "}
+              but is not endorsed or certified by TMDB.
             </p>
           </div>
         </div>
