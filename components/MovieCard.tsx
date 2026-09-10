@@ -1,3 +1,4 @@
+```tsx
 "use client";
 
 import Image from "next/image";
@@ -9,7 +10,6 @@ type Movie = {
   id: number;
   title?: string;
   name?: string;
-  overview?: string | null;
   poster_path?: string | null;
   backdrop_path?: string | null;
   vote_average?: number | null;
@@ -208,25 +208,29 @@ export default function MovieCard({ movie }: MovieCardProps) {
       </div>
 
       {/* Content */}
-      <div className="flex min-h-[120px] flex-1 flex-col p-3">
+      <div className="flex flex-1 flex-col p-3">
         {/* Title */}
         <h3
           title={title}
-          className="line-clamp-1 min-h-[20px] text-sm font-semibold text-white transition-colors duration-200 group-hover:text-red-400"
+          className="line-clamp-2 min-h-[40px] text-sm font-semibold leading-5 text-white transition-colors duration-200 group-hover:text-red-400"
         >
           {title}
         </h3>
 
-        {/* Year */}
-        <p className="mt-1 min-h-[16px] text-xs text-gray-500">
-          {year || "Unknown year"}
-        </p>
+        {/* Year + Rating */}
+        <div className="mt-2 flex items-center justify-between">
+          <p className="text-xs text-gray-500">
+            {year || "Unknown year"}
+          </p>
 
-        {/* Description */}
-        <p className="mt-2 min-h-[40px] line-clamp-2 text-sm leading-5 text-gray-400">
-          {movie.overview || "No description available."}
-        </p>
+          {rating !== null && (
+            <span className="text-xs font-medium text-yellow-400">
+              ★ {rating.toFixed(1)}
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );
 }
+```
