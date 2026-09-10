@@ -44,6 +44,11 @@ export default function HeroSection({ movie }: HeroSectionProps) {
     }
   };
 
+  const closeTrailer = () => {
+    setShowTrailer(false);
+    setTrailerKey(null);
+  };
+
   const releaseDate = movie.release_date || movie.first_air_date;
 
   const year = releaseDate
@@ -58,7 +63,7 @@ export default function HeroSection({ movie }: HeroSectionProps) {
   return (
     <>
       <section className="relative min-h-[78vh] overflow-hidden bg-[#050505]">
-        {/* Optimized Backdrop */}
+        {/* Optimized backdrop */}
         {movie.backdrop_path && (
           <img
             src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
@@ -70,18 +75,20 @@ export default function HeroSection({ movie }: HeroSectionProps) {
           />
         )}
 
-        {/* Cinematic gradients */}
-        <div className="absolute inset-0 bg-black/30" />
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/35" />
 
+        {/* Side gradient */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/70 to-transparent" />
 
+        {/* Bottom gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/20 to-transparent" />
 
         {/* Content */}
         <div className="relative z-10 flex min-h-[78vh] items-end">
           <div className="w-full max-w-3xl px-5 pb-16 pt-32 sm:px-8 md:pb-24 lg:px-12">
             {/* Featured label */}
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 backdrop-blur-md">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400">
               <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
               Featured Movie
             </div>
@@ -117,7 +124,7 @@ export default function HeroSection({ movie }: HeroSectionProps) {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href={`/movie/${movie.id}`}
-                className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-red-950/30 transition-all duration-200 hover:scale-[1.02] hover:bg-red-500"
+                className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-red-950/30 transition-colors duration-200 hover:bg-red-500"
               >
                 <Info size={18} />
                 View Details
@@ -126,7 +133,7 @@ export default function HeroSection({ movie }: HeroSectionProps) {
               <button
                 type="button"
                 onClick={handleTrailer}
-                className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur-md transition-all duration-200 hover:bg-white hover:text-black"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white transition-colors duration-200 hover:bg-white hover:text-black"
               >
                 <Play size={18} fill="currentColor" />
                 Watch Trailer
@@ -139,28 +146,24 @@ export default function HeroSection({ movie }: HeroSectionProps) {
       {/* Trailer Modal */}
       {showTrailer && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm"
-          onClick={() => {
-            setShowTrailer(false);
-            setTrailerKey(null);
-          }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4"
+          onClick={closeTrailer}
         >
           <div
             className="relative w-full max-w-5xl"
             onClick={(event) => event.stopPropagation()}
           >
+            {/* Close */}
             <button
               type="button"
-              onClick={() => {
-                setShowTrailer(false);
-                setTrailerKey(null);
-              }}
+              onClick={closeTrailer}
               aria-label="Close trailer"
-              className="absolute -right-1 -top-12 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white hover:text-black sm:-right-2"
+              className="absolute -right-1 -top-12 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white hover:text-black sm:-right-2"
             >
               <X size={20} />
             </button>
 
+            {/* Video */}
             <div className="aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl">
               {loadingTrailer ? (
                 <div className="flex h-full items-center justify-center text-sm text-gray-400">
