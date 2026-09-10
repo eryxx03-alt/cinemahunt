@@ -15,12 +15,14 @@ type Props = {
   movie: Movie;
 };
 
+const WISHLIST_KEY = "cinemahunt-wishlist";
+
 export default function MovieWishlistButton({ movie }: Props) {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("cinemahunt-wishlist");
+      const stored = localStorage.getItem(WISHLIST_KEY);
       const wishlist = stored ? JSON.parse(stored) : [];
 
       setSaved(
@@ -34,26 +36,29 @@ export default function MovieWishlistButton({ movie }: Props) {
 
   function toggleWishlist() {
     try {
-      const stored = localStorage.getItem("cinemahunt-wishlist");
+      const stored = localStorage.getItem(WISHLIST_KEY);
       const wishlist = stored ? JSON.parse(stored) : [];
 
       if (!Array.isArray(wishlist)) return;
 
+      let updated;
+
       if (saved) {
-        const updated = wishlist.filter((item) => item?.id !== movie.id);
-        localStorage.setItem(
-          "cinemahunt-wishlist",
-          JSON.stringify(updated)
+        updated = wishlist.filter(
+          (item) => item?.id !== movie.id
         );
-        setSaved(false);
       } else {
-        const updated = [...wishlist, movie];
-        localStorage.setItem(
-          "cinemahunt-wishlist",
-          JSON.stringify(updated)
-        );
-        setSaved(true);
+        updated = [...wishlist, movie];
       }
+
+      localStorage.setItem(
+        WISHLIST_KEY,
+        JSON.stringify(updated)
+      );
+
+      setSaved(!saved);
+
+      window.dispatchEvent(new Event("wishlistUpdated"));
     } catch {
       console.error("Wishlist update failed");
     }
