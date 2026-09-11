@@ -278,6 +278,7 @@ export default async function HomePage({
               <span className="transition-transform duration-300 group-hover/action:scale-110">
                 🎬
               </span>
+
               <span className="hidden sm:inline">
                 Movies
               </span>
@@ -290,6 +291,7 @@ export default async function HomePage({
               <span className="text-base leading-none transition-transform duration-300 group-hover/action:scale-110">
                 ♡
               </span>
+
               <span className="hidden sm:inline">
                 Wishlist
               </span>
@@ -299,6 +301,11 @@ export default async function HomePage({
           {/* HERO CONTENT */}
           <div className="relative z-10 mx-auto flex min-h-[720px] max-w-7xl items-end px-4 pb-20 pt-32 sm:min-h-[760px] sm:px-6 sm:pb-24 lg:min-h-[820px] lg:pb-28">
             <div className="max-w-4xl">
+              {/* BRAND */}
+              <p className="mb-3 text-sm font-black tracking-tight text-white sm:text-base">
+                CinemaHunt
+              </p>
+
               {/* BADGE */}
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-red-500/25 bg-red-500/10 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.25em] text-red-400 backdrop-blur-md sm:text-xs">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500 shadow-lg shadow-red-500/60" />
@@ -350,6 +357,7 @@ export default async function HomePage({
                   <span className="text-base transition-transform duration-300 group-hover/button:scale-110">
                     ▶
                   </span>
+
                   View Details
                 </Link>
 

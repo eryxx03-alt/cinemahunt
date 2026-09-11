@@ -13,21 +13,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = "https://cinemahunt10.vercel.app";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://cinemahunt10.vercel.app"),
+  metadataBase: new URL(siteUrl),
 
   title: {
-    default: "CinemaHunt",
+    default: "CinemaHunt – Discover Movies, Trailers & More",
     template: "%s | CinemaHunt",
   },
 
   applicationName: "CinemaHunt",
 
   description:
-    "Explore trending, top-rated and upcoming movies. Find ratings, trailers and movie details on CinemaHunt.",
+    "CinemaHunt is a movie discovery platform to explore trending, popular and top-rated movies, discover trailers, ratings and detailed movie information.",
 
   alternates: {
-    canonical: "https://cinemahunt10.vercel.app",
+    canonical: siteUrl,
   },
 
   icons: {
@@ -37,12 +39,19 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "CinemaHunt",
+    title: "CinemaHunt – Discover Movies, Trailers & More",
     description:
-      "Explore trending, top-rated and upcoming movies on CinemaHunt.",
+      "Explore trending, popular and top-rated movies, trailers, ratings and detailed movie information on CinemaHunt.",
     siteName: "CinemaHunt",
     type: "website",
-    url: "https://cinemahunt10.vercel.app",
+    url: siteUrl,
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "CinemaHunt – Discover Movies, Trailers & More",
+    description:
+      "Explore trending, popular and top-rated movies, trailers, ratings and detailed movie information on CinemaHunt.",
   },
 
   // Add your Google verification token here when you have it:
@@ -54,20 +63,41 @@ export const metadata: Metadata = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": `${siteUrl}/#website`,
   name: "CinemaHunt",
   alternateName: "Cinema Hunt",
-  url: "https://cinemahunt10.vercel.app",
+  url: siteUrl,
   description:
-    "Explore trending, top-rated and upcoming movies. Find ratings, trailers and movie details on CinemaHunt.",
+    "CinemaHunt is a movie discovery platform to explore trending, popular and top-rated movies, discover trailers, ratings and detailed movie information.",
+  publisher: {
+    "@id": `${siteUrl}/#organization`,
+  },
   potentialAction: {
     "@type": "SearchAction",
     target: {
       "@type": "EntryPoint",
-      urlTemplate:
-        "https://cinemahunt10.vercel.app/search?q={search_term_string}",
+      urlTemplate: `${siteUrl}/search?q={search_term_string}`,
     },
     "query-input": "required name=search_term_string",
   },
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${siteUrl}/#organization`,
+  name: "CinemaHunt",
+  alternateName: "Cinema Hunt",
+  url: siteUrl,
+  logo: {
+    "@type": "ImageObject",
+    url: `${siteUrl}/logo.png`,
+  },
+  description:
+    "CinemaHunt is a movie discovery platform for exploring movies, ratings, trailers and detailed movie information.",
+  sameAs: [
+    "https://github.com/eryxx03-alt/cinemahunt",
+  ],
 };
 
 export default function RootLayout({
@@ -91,6 +121,14 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(websiteSchema),
+          }}
+        />
+
+        {/* CinemaHunt Organization Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
           }}
         />
       </head>
