@@ -17,4 +17,11 @@ const nextConfig: NextConfig = {
 export default withSerwist({
   swSrc: "app/sw.ts",
   swDest: "public/sw.js",
+
+  additionalPrecacheEntries: [
+    {
+      url: "/~offline",
+      revision: "1",
+    },
+  ],
 })(nextConfig);
