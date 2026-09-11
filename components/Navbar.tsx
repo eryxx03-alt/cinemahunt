@@ -10,6 +10,7 @@ import SearchBar from "@/components/SearchBar";
 
 export default function Navbar() {
   const pathname = usePathname();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -24,20 +25,31 @@ export default function Navbar() {
       return pathname === "/";
     }
 
-    return (
-      pathname === href ||
-      pathname.startsWith(`${href}/`)
-    );
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   const wishlistActive =
     pathname === "/watchlist" ||
     pathname.startsWith("/watchlist/");
 
+  // Close menus when navigating
   useEffect(() => {
     setMenuOpen(false);
     setSearchOpen(false);
   }, [pathname]);
+
+  // Prevent background scrolling while mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/70 shadow-2xl shadow-black/30 backdrop-blur-2xl">
@@ -47,6 +59,7 @@ export default function Navbar() {
         <Link
           href="/"
           className="group flex shrink-0 items-center gap-2.5"
+          aria-label="CinemaHunt Home"
         >
           <div className="relative">
             <div className="absolute inset-0 rounded-xl bg-red-600/30 opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100" />
@@ -57,7 +70,7 @@ export default function Navbar() {
               width={40}
               height={40}
               priority
-              className="relative object-contain transition-transform duration-300 group-hover:scale-105 sm:h-[42px] sm:w-[42px]"
+              className="relative h-10 w-10 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-[42px] sm:w-[42px]"
             />
           </div>
 
@@ -68,7 +81,6 @@ export default function Navbar() {
 
         {/* DESKTOP NAVIGATION */}
         <div className="hidden items-center gap-2 sm:flex">
-
           <div className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1">
 
             {navItems.map((item) => {
@@ -105,11 +117,7 @@ export default function Navbar() {
             >
               <Heart
                 size={17}
-                fill={
-                  wishlistActive
-                    ? "currentColor"
-                    : "none"
-                }
+                fill={wishlistActive ? "currentColor" : "none"}
               />
 
               <span>Wishlist</span>
@@ -122,21 +130,15 @@ export default function Navbar() {
             {/* SEARCH BUTTON */}
             <button
               type="button"
-              onClick={() =>
-                setSearchOpen((open) => !open)
-              }
+              onClick={() => setSearchOpen((open) => !open)}
               aria-label="Search movies"
               className="flex items-center justify-center rounded-lg p-2.5 text-zinc-400 transition-all duration-300 hover:bg-white/[0.06] hover:text-white"
             >
-              {searchOpen ? (
-                <X size={18} />
-              ) : (
-                <Search size={18} />
-              )}
+              {searchOpen ? <X size={18} /> : <Search size={18} />}
             </button>
           </div>
 
-          {/* DESKTOP SEARCH BAR */}
+          {/* DESKTOP SEARCH */}
           {searchOpen && (
             <div className="ml-1 w-[300px]">
               <SearchBar />
@@ -159,49 +161,35 @@ export default function Navbar() {
           >
             <Heart
               size={19}
-              fill={
-                wishlistActive
-                  ? "currentColor"
-                  : "none"
-              }
+              fill={wishlistActive ? "currentColor" : "none"}
             />
           </Link>
 
           {/* MOBILE SEARCH */}
           <button
             type="button"
-            onClick={() =>
-              setSearchOpen((open) => !open)
-            }
+            onClick={() => {
+              setSearchOpen((open) => !open);
+              setMenuOpen(false);
+            }}
             aria-label="Search movies"
             className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-zinc-400 transition-all duration-300 hover:border-red-500/30 hover:text-white"
           >
-            {searchOpen ? (
-              <X size={20} />
-            ) : (
-              <Search size={19} />
-            )}
+            {searchOpen ? <X size={20} /> : <Search size={19} />}
           </button>
 
           {/* MOBILE MENU */}
           <button
             type="button"
-            onClick={() =>
-              setMenuOpen((open) => !open)
-            }
-            aria-label={
-              menuOpen
-                ? "Close menu"
-                : "Open menu"
-            }
+            onClick={() => {
+              setMenuOpen((open) => !open);
+              setSearchOpen(false);
+            }}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-zinc-300 transition-all duration-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-white"
           >
-            {menuOpen ? (
-              <X size={21} />
-            ) : (
-              <Menu size={21} />
-            )}
+            {menuOpen ? <X size={21} /> : <Menu size={21} />}
           </button>
         </div>
       </div>
@@ -264,11 +252,7 @@ export default function Navbar() {
               <span className="flex items-center gap-3">
                 <Heart
                   size={18}
-                  fill={
-                    wishlistActive
-                      ? "currentColor"
-                      : "none"
-                  }
+                  fill={wishlistActive ? "currentColor" : "none"}
                 />
 
                 Wishlist
