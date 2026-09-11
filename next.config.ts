@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import withSerwist from "@serwist/next";
 
 const nextConfig: NextConfig = {
   images: {
@@ -9,6 +10,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  turbopack: {},
 };
 
-export default nextConfig;
+export default withSerwist({
+  swSrc: "app/sw.ts",
+  swDest: "public/sw.js",
+})(nextConfig);
